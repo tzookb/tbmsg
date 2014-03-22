@@ -17,12 +17,10 @@
     },
     "require-dev": {},
     "require-all": true,
-    "autoload": {
+
+    "autoload": {    
         "psr-0": {
             "Tzookb\\TBMsg": "src/"
-        },
-        "psr-4": {
-            "Tzookb\\TBMsg\\": "src"
         }
     },    
     "minimum-stability": "dev"    
