@@ -1,8 +1,7 @@
 <?php
 namespace Tzookb\TBMsg;
 
-use Tzookb\TBMsg\Repositories\Contracts\ConversationRepositoryInterface;
-use Tzookb\TBMsg\Repositories\Contracts\MessageRepositoryInterface;
+
 use DB;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\Conversation;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\ConversationUsers;
