@@ -71,8 +71,14 @@ class TBMsg {
         return false;
     }
 
-    public function addMessageToConversation(ConversationRepositoryInterface $conv, MessageRepositoryInterface $msg) {
+    public function addMessageToConversation($conv_id, $msg) {
+        //check if user of message is in conversation
 
+        //if so add new message
+
+        //get all users in conversation
+
+        //and add msg status for each user in conversation
     }
 
     public function createConversation( $users_ids=array() ) {
@@ -94,6 +100,7 @@ class TBMsg {
                 }
             }
         }
+        return $conv;
     }
 
     public function markReadAllMessagesInConversation($conv_id, $user_id) {
