@@ -1,0 +1,29 @@
+{
+    "name": "tzookb/tbmsg",
+    "type": "library",
+    "description": "users messaging system",
+    "keywords": ["messaging", "message-system", "php"],
+    "homepage": "https://github.com/tzookb/tbmsg",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "tzookb",
+            "email": "tzookb@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "require-dev": {},
+    "require-all": true,
+    "autoload": {
+        "psr-0": {
+            "Tzookb\\TBMsg": "src/"
+        },
+        "psr-4": {
+            "Tzookb\\TBMsg\\": "src"
+        }
+    },    
+    "minimum-stability": "dev"    
+}
