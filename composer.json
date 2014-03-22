@@ -1,9 +1,9 @@
 {
-    "name": "artdarek/oauth-4-laravel",
+    "name": "tzookb/tbmsg",
     "type": "library",
     "description": "users messaging system",
     "keywords": ["messaging", "message-system", "php"],
-    "homepage": "https://github.com/tzookb/TBMsg",
+    "homepage": "https://github.com/tzookb/tbmsg",
     "license": "MIT",
     "authors": [
         {
