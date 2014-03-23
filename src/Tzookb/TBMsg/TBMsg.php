@@ -14,8 +14,7 @@ class TBMsg {
     const ARCHIVED = 3;
 
     public function __construct() {
-        var_dump('TBMsg');
-        var_dump('TBMsg');
+
     }
 
     public function getUserConversations($user_id) {
@@ -135,5 +134,9 @@ class TBMsg {
             ',
             array($user_id, self::UNREAD, $conv_id)
         );
+    }
+
+    public function getNumOfUnreadMsgs($user_id) {
+        return 2;
     }
 } 
