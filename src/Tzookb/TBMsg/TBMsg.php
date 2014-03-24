@@ -36,10 +36,12 @@ class TBMsg {
     public function getConversationMessages($conv_id, $user_id) {
         $results = DB::select(
             '
-            SELECT *
+            SELECT msg.id as msgID, msg.content, msg.created_at, us.id as userId, us.username, us.image
             FROM messages_status mst
             INNER JOIN messages msg
             ON mst.msg_id=msg.id
+            INNER JOIN users us
+            ON msg.sender_id=us.id
             WHERE msg.conv_id=?
             AND mst.user_id = ?
             AND mst.status NOT IN (?,?)
@@ -134,6 +136,22 @@ class TBMsg {
             ',
             array($user_id, self::UNREAD, $conv_id)
         );
+    }
+
+    public function isUserInConversation($conv_id, $user_id) {
+        $results = DB::select(
+            '
+            SELECT COUNT(cu.conv_id)
+            FROM conv_users cu
+            WHERE cu.user_id=?
+            AND cu.conv_id=?
+            HAVING COUNT(cu.conv_id)>0
+            ',
+            array($user_id, $conv_id)
+        );
+        if ( empty($results) )
+            return false;
+        return true;
     }
 
     public function getNumOfUnreadMsgs($user_id) {
