@@ -11,9 +11,6 @@ namespace Tzookb\TBMsg\Repositories\Eloquent\Objects;
 class Message extends \Eloquent{
 
     public function __construct() {
-        var_dump('MessageEloquent');
-        var_dump('MessageEloquent');
-        var_dump('MessageEloquent');
-        var_dump('MessageEloquent');
+
     }
 } 

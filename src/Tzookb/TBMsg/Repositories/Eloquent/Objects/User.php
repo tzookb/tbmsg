@@ -10,9 +10,6 @@ namespace Tzookb\TBMsg\Repositories\Eloquent\Objects;
 class User  extends \Eloquent{
 
     public function __construct() {
-        var_dump('xxxxxxxxx');
-        var_dump('xxxxxxxxx');
-        var_dump('xxxxxxxxx');
-        var_dump('xxxxxxxxx');
+
     }
 } 

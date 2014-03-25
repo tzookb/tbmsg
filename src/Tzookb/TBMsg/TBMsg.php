@@ -5,6 +5,8 @@ namespace Tzookb\TBMsg;
 use DB;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\Conversation;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\ConversationUsers;
+use Tzookb\TBMsg\Repositories\Eloquent\Objects\Message;
+use Tzookb\TBMsg\Repositories\Eloquent\Objects\MessageStatus;
 
 class TBMsg {
 
@@ -26,8 +28,8 @@ class TBMsg {
             ON mst.msg_id=msg.id
             WHERE mst.user_id = ?
             AND mst.status NOT IN (?,?)
-            GROUP BY msg.conv_id
-            ORDER BY msg.created_at
+            ORDER BY msg.created_at DESC
+            LIMIT 1
             '
             , array($user_id, self::DELETED, self::ARCHIVED));
         return $results;
@@ -71,15 +73,39 @@ class TBMsg {
         return false;
     }
 
-    public function addMessageToConversation($conv_id, $msg) {
+    public function addMessageToConversation($conv_id, $user_id, $content) {
         //check if user of message is in conversation
+        if ( !$this->isUserInConversation($conv_id, $user_id) )
+            return false;
 
         //if so add new message
+        $message = new Message();
+        $message->sender_id = $user_id;
+        $message->conv_id = $conv_id;
+        $message->content = $content;
+        $message->save();
 
         //get all users in conversation
+        $usersInConv = $this->getUsersInConversation($conv_id);
 
         //and add msg status for each user in conversation
+        foreach ( $usersInConv as $userInConv ) {
+            $messageStatus = new MessageStatus();
+            $messageStatus->user_id = $userInConv;
+            $messageStatus->msg_id = $message->id;
+            if ( $userInConv == $user_id ) {
+                //its the sender user
+                $messageStatus->self = 1;
+                $messageStatus->status = self::READ;
+            } else {
+                //other users in conv
+                $messageStatus->self = 0;
+                $messageStatus->status = self::UNREAD;
+            }
+            $messageStatus->save();
+        }
     }
+
 
     public function createConversation( $users_ids=array() ) {
         if ( count($users_ids ) > 0 ) {
@@ -107,7 +133,7 @@ class TBMsg {
         DB::statement(
             '
             UPDATE messages_status mst
-            SET mst.status='.self::READ.'
+            SET mst.status=?
             WHERE mst.user_id=?
             AND mst.status=?
             AND mst.msg_id IN (
@@ -117,7 +143,7 @@ class TBMsg {
               AND msg.sender_id!=?
             )
             ',
-            array($user_id, self::READ, $conv_id, $user_id)
+            array(self::READ, $user_id, self::UNREAD, $conv_id, $user_id)
         );
     }
 
@@ -154,7 +180,34 @@ class TBMsg {
         return true;
     }
 
+    public function getUsersInConversation($conv_id) {
+        $results = DB::select(
+            '
+            SELECT cu.user_id
+            FROM conv_users cu
+            WHERE cu.conv_id=?
+            ',
+            array($conv_id)
+        );
+
+        $usersInConvIds = array();
+        foreach ( $results as $row ) {
+            $usersInConvIds[] = $row->user_id;
+        }
+        return $usersInConvIds;
+    }
+
     public function getNumOfUnreadMsgs($user_id) {
-        return 2;
+        $results = DB::select(
+            '
+            SELECT COUNT(mst.id) as numOfUnread
+            FROM messages_status mst
+            WHERE mst.user_id=?
+            AND mst.status=?
+            ',
+            array($user_id, self::UNREAD)
+        );
+
+        return $results[0]->numOfUnread;
     }
 } 

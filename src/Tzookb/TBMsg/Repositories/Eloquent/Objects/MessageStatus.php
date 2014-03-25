@@ -9,10 +9,10 @@ namespace Tzookb\TBMsg\Repositories\Eloquent\Objects;
 
 class MessageStatus extends \Eloquent{
 
+    protected $table = 'messages_status';
+    public $timestamps = false;
+
     public function __construct() {
-        var_dump('xxxxxxxxx');
-        var_dump('xxxxxxxxx');
-        var_dump('xxxxxxxxx');
-        var_dump('xxxxxxxxx');
+
     }
 } 
