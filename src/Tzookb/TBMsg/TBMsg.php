@@ -22,14 +22,17 @@ class TBMsg {
     public function getUserConversations($user_id) {
         $results = DB::select(
             '
-            SELECT *
-            FROM messages_status mst
-            INNER JOIN messages msg
-            ON mst.msg_id=msg.id
-            WHERE mst.user_id = ?
-            AND mst.status NOT IN (?,?)
+            SELECT msg.conv_id as conv_id, msg.created_at, msg.content, mst.status, mst.self, us.username, us.image
+            FROM messages msg
+            INNER JOIN (
+                SELECT MAX(created_at) created_at
+                FROM messages
+                GROUP BY conv_id
+            ) m2 ON msg.created_at = m2.created_at
+            INNER JOIN messages_status mst ON msg.id=mst.msg_id
+            INNER JOIN users us ON msg.sender_id=us.id
+            WHERE mst.user_id = ? AND mst.status NOT IN (?, ?)
             ORDER BY msg.created_at DESC
-            LIMIT 1
             '
             , array($user_id, self::DELETED, self::ARCHIVED));
         return $results;
