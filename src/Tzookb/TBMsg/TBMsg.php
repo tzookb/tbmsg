@@ -20,7 +20,9 @@ class TBMsg {
     }
 
     public function getUserConversations($user_id) {
-        $results = DB::select(
+        $return = array();
+
+        $convs = DB::select(
             '
             SELECT msg.conv_id as conv_id, msg.created_at, msg.content, mst.status, mst.self, us.username, us.image
             FROM messages msg
@@ -35,7 +37,40 @@ class TBMsg {
             ORDER BY msg.created_at DESC
             '
             , array($user_id, self::DELETED, self::ARCHIVED));
-        return $results;
+
+        $convsIds = array();
+        foreach ( $convs as $conv ) {
+            //this is for the query later
+            $convsIds[] = $conv->conv_id;
+
+            //this is for the return result
+            $conv->users = array();
+            $return[$conv->conv_id] = $conv;
+        }
+        $convsIds = implode(',',$convsIds);
+
+        $usersInConvs = DB::select(
+            '
+            SELECT cu.conv_id, us.id, us.username, us.image
+            FROM conv_users cu
+            INNER JOIN users us
+            ON cu.user_id=us.id
+            WHERE cu.conv_id IN('.$convsIds.')
+            '
+            , array());
+
+        foreach ( $usersInConvs as $usersInConv ) {
+            if ( $user_id != $usersInConv->id ) {
+                $user = new \stdClass();
+                $user->id = $usersInConv->id;
+                $user->username = $usersInConv->username;
+                $user->image = $usersInConv->image;
+                //this is for the return result
+                $return[$usersInConv->conv_id]->users[$user->id] = $user;
+            }
+        }
+
+        return $return;
     }
 
     public function getConversationMessages($conv_id, $user_id) {
