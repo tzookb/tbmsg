@@ -49,26 +49,30 @@ class TBMsg {
         }
         $convsIds = implode(',',$convsIds);
 
-        $usersInConvs = DB::select(
+        if ( $convsIds != '' ) {
+            $usersInConvs = DB::select(
+                '
+                SELECT cu.conv_id, us.id, us.username, us.image
+                FROM conv_users cu
+                INNER JOIN users us
+                ON cu.user_id=us.id
+                WHERE cu.conv_id IN('.$convsIds.')
             '
-            SELECT cu.conv_id, us.id, us.username, us.image
-            FROM conv_users cu
-            INNER JOIN users us
-            ON cu.user_id=us.id
-            WHERE cu.conv_id IN('.$convsIds.')
-            '
-            , array());
+                , array());
 
-        foreach ( $usersInConvs as $usersInConv ) {
-            if ( $user_id != $usersInConv->id ) {
-                $user = new \stdClass();
-                $user->id = $usersInConv->id;
-                $user->username = $usersInConv->username;
-                $user->image = $usersInConv->image;
-                //this is for the return result
-                $return[$usersInConv->conv_id]->users[$user->id] = $user;
+            foreach ( $usersInConvs as $usersInConv ) {
+                if ( $user_id != $usersInConv->id ) {
+                    $user = new \stdClass();
+                    $user->id = $usersInConv->id;
+                    $user->username = $usersInConv->username;
+                    $user->image = $usersInConv->image;
+                    //this is for the return result
+                    $return[$usersInConv->conv_id]->users[$user->id] = $user;
+                }
             }
         }
+
+
 
         return $return;
     }
