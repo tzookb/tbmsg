@@ -9,7 +9,9 @@ namespace Tzookb\TBMsg\Repositories\Eloquent\Objects;
 
 class User  extends \Eloquent{
 
-    public function __construct() {
-
+    public function msgs_status()
+    {
+        return $this->hasMany('Tzookb\TBMsg\Repositories\Eloquent\Objects\MessageStatus', 'user_id', 'id');
     }
+
 } 

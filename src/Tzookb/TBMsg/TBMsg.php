@@ -3,6 +3,7 @@ namespace Tzookb\TBMsg;
 
 
 use DB;
+use Config;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\Conversation;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\ConversationUsers;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\Message;
@@ -16,7 +17,7 @@ class TBMsg {
     const ARCHIVED = 3;
 
     public function __construct() {
-
+        //$obj = Config::get('tbmsg::config.SenderModel');
     }
 
     public function getUserConversations($user_id) {
