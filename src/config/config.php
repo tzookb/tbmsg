@@ -1,5 +1,7 @@
 <?php 
 
-return array( 
-	'SenderModel' => 'Tzookb\TBMsg\Repositories\Eloquent\Objects\User',
+return array(
+    'usersTable' => 'users',
+    'usersTableKey' => 'id',
+
 );
