@@ -4,10 +4,13 @@ namespace Tzookb\TBMsg;
 
 use DB;
 use Config;
-use Tzookb\TBMsg\Repositories\Eloquent\Objects\Conversation;
+use Illuminate\Support\Collection;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\ConversationUsers;
-use Tzookb\TBMsg\Repositories\Eloquent\Objects\Message;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\MessageStatus;
+use Tzookb\TBMsg\Entities\Conversation;
+use Tzookb\TBMsg\Entities\Message;
+use Tzookb\TBMsg\Repositories\Eloquent\Objects\Message as MessageOld;
+use Tzookb\TBMsg\Repositories\Eloquent\Objects\Conversation as ConversationOld;
 
 class TBMsg {
 
@@ -15,17 +18,20 @@ class TBMsg {
     const UNREAD = 1;
     const READ = 2;
     const ARCHIVED = 3;
+    private $usersTable;
 
     public function __construct() {
-        //$obj = Config::get('tbmsg::config.SenderModel');
+        $this->usersTable = Config::get('tbmsg.usersTable', 'users');
+        $this->usersTableKey = Config::get('tbmsg.usersTableKey', 'id');
     }
 
     public function getUserConversations($user_id) {
         $return = array();
+        $conversations = new Collection();
 
         $convs = DB::select(
             '
-            SELECT msg.conv_id as conv_id, msg.created_at, msg.content, mst.status, mst.self, us.username, us.image
+            SELECT msg.conv_id as conv_id, msg.created_at, msg.id msgId, msg.content, mst.status, mst.self, us.'.$this->usersTableKey.' userId
             FROM messages msg
             INNER JOIN (
                 SELECT MAX(created_at) created_at
@@ -33,7 +39,7 @@ class TBMsg {
                 GROUP BY conv_id
             ) m2 ON msg.created_at = m2.created_at
             INNER JOIN messages_status mst ON msg.id=mst.msg_id
-            INNER JOIN users us ON msg.sender_id=us.id
+            INNER JOIN '.$this->usersTable.' us ON msg.sender_id=us.'.$this->usersTableKey.'
             WHERE mst.user_id = ? AND mst.status NOT IN (?, ?)
             ORDER BY msg.created_at DESC
             '
@@ -47,16 +53,30 @@ class TBMsg {
             //this is for the return result
             $conv->users = array();
             $return[$conv->conv_id] = $conv;
+
+            $conversation = new Conversation();
+            $conversation->setId( $conv->conv_id );
+
+            $message = new Message();
+            $message->setId( $conv->msgId );
+            $message->setCreated( $conv->created_at );
+            $message->setContent( $conv->content );
+            $message->setStatus( $conv->status );
+            $message->setSelf( $conv->self );
+            $message->setSender( $conv->userId );
+            $conversation->addMessage($message);
+            $conversations[ $conversation->getId() ] = $conversation;
         }
         $convsIds = implode(',',$convsIds);
+
 
         if ( $convsIds != '' ) {
             $usersInConvs = DB::select(
                 '
-                SELECT cu.conv_id, us.id, us.username, us.image
+                SELECT cu.conv_id, us.'.$this->usersTableKey.'
                 FROM conv_users cu
-                INNER JOIN users us
-                ON cu.user_id=us.id
+                INNER JOIN '.$this->usersTable.' us
+                ON cu.user_id=us.'.$this->usersTableKey.'
                 WHERE cu.conv_id IN('.$convsIds.')
             '
                 , array());
@@ -65,34 +85,54 @@ class TBMsg {
                 if ( $user_id != $usersInConv->id ) {
                     $user = new \stdClass();
                     $user->id = $usersInConv->id;
-                    $user->username = $usersInConv->username;
-                    $user->image = $usersInConv->image;
                     //this is for the return result
                     $return[$usersInConv->conv_id]->users[$user->id] = $user;
                 }
+                $conversations[ $usersInConv->conv_id ]->addParticipant( $usersInConv->id );
             }
         }
 
 
-
-        return $return;
+        return $conversations;
     }
 
-    public function getConversationMessages($conv_id, $user_id) {
+    /**
+     * @param $conv_id
+     * @param $user_id
+     * @return Conversation
+     */
+    public function getConversationMessages($conv_id, $user_id, $newToOld=true) {
+        if ( $newToOld )
+            $orderBy = 'desc';
+        else
+            $orderBy = 'asc';
         $results = DB::select(
             '
-            SELECT msg.id as msgID, msg.content, msg.created_at, us.id as userId, us.username, us.image
+            SELECT msg.id as msgId, msg.content, msg.created_at, us.'.$this->usersTableKey.' as userId
             FROM messages_status mst
             INNER JOIN messages msg
             ON mst.msg_id=msg.id
-            INNER JOIN users us
-            ON msg.sender_id=us.id
+            INNER JOIN '.$this->usersTable.' us
+            ON msg.sender_id=us.'.$this->usersTableKey.'
             WHERE msg.conv_id=?
             AND mst.user_id = ?
             AND mst.status NOT IN (?,?)
+            ORDER BY msg.created_at '.$orderBy.'
             '
             , array($conv_id, $user_id, self::DELETED, self::ARCHIVED));
-        return $results;
+
+        $conversation = new Conversation();
+        foreach ( $results as $row )
+        {
+            $msg = new Message();
+            $msg->setId( $row->msgId );
+            $msg->setContent( $row->content );
+            $msg->setCreated( $row->created_at );
+            $msg->setSender( $row->userId );
+            $conversation->addMessage( $msg );
+        }
+
+        return $conversation;
     }
 
     /**
@@ -122,7 +162,7 @@ class TBMsg {
             return false;
 
         //if so add new message
-        $message = new Message();
+        $message = new MessageOld();
         $message->sender_id = $user_id;
         $message->conv_id = $conv_id;
         $message->content = $content;
@@ -153,7 +193,7 @@ class TBMsg {
     public function createConversation( $users_ids=array() ) {
         if ( count($users_ids ) > 0 ) {
             //create new conv
-            $conv = new Conversation();
+            $conv = new ConversationOld();
             $conv->save();
 
 
