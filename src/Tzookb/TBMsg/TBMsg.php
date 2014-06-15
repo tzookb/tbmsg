@@ -153,7 +153,7 @@ class TBMsg {
         if( count($results) == 1 ) {
             return (int)$results[0]->conv_id;
         }
-        return false;
+        return -1;
     }
 
     public function addMessageToConversation($conv_id, $user_id, $content) {
