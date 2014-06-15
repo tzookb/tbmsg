@@ -2,7 +2,7 @@
     "name": "tzookb/tbmsg",
     "type": "library",
     "description": "users messaging system",
-    "keywords": ["messaging", "message-system", "php"],
+    "keywords": ["laravel", "php", "messaging", "message-system"],
     "homepage": "https://github.com/tzookb/tbmsg",
     "license": "MIT",
     "authors": [
