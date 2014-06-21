@@ -132,6 +132,11 @@ class TBMsg {
             $conversation->addMessage( $msg );
         }
 
+        $usersInConv = $this->getUsersInConversation($conv_id);
+        foreach ( $usersInConv as $userInConv )
+            $conversation->addParticipant( $userInConv );
+
+
         return $conversation;
     }
 
