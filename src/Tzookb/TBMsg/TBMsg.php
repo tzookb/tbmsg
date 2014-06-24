@@ -217,6 +217,22 @@ class TBMsg {
         return $conv;
     }
 
+    public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content)
+    {
+        //get conversation by two users
+        $conv = $this->getConversationByTwoUsers($senderId, $receiverId);
+
+        //if conversation doesnt exist, create it
+        if ( $conv == -1 )
+        {
+            $conv = $this->createConversation([$senderId, $receiverId]);
+            $conv = $conv->id;
+        }
+
+        //add message to new conversation
+        $this->addMessageToConversation($conv, $senderId, $content);
+    }
+
     public function markReadAllMessagesInConversation($conv_id, $user_id) {
         DB::statement(
             '
