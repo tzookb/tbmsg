@@ -5,6 +5,7 @@ namespace Tzookb\TBMsg;
 use DB;
 use Config;
 use Illuminate\Support\Collection;
+use Tzookb\TBMsg\Exceptions\NotEnoughUsersInConvException;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\ConversationUsers;
 use Tzookb\TBMsg\Repositories\Eloquent\Objects\MessageStatus;
 use Tzookb\TBMsg\Entities\Conversation;
@@ -195,12 +196,16 @@ class TBMsg {
     }
 
 
-    public function createConversation( $users_ids=array() ) {
-        if ( count($users_ids ) > 0 ) {
+    /**
+     * @param array $users_ids
+     * @throws Exceptions\NotEnoughUsersInConvException
+     * @return ConversationOld
+     */
+    public function createConversation( $users_ids ) {
+        if ( count($users_ids ) > 1 ) {
             //create new conv
             $conv = new ConversationOld();
             $conv->save();
-
 
             //get the id of conv, and add foreach user a line in conv_users
             foreach ( $users_ids as $user_id ) {
@@ -213,8 +218,9 @@ class TBMsg {
 
                 }
             }
-        }
-        return $conv;
+            return $conv;
+        } else
+            throw new NotEnoughUsersInConvException;
     }
 
     public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content)
