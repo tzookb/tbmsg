@@ -1,5 +1,5 @@
 <?php
-namespace Tzookb\TBMsg\Repositories\Eloquent\Objects;
+namespace Tzookb\TBMsg\Models\Eloquent;
 /**
  * Created by PhpStorm.
  * User: tzookb
@@ -7,12 +7,10 @@ namespace Tzookb\TBMsg\Repositories\Eloquent\Objects;
  * Time: 6:20 PM
  */
 
-class MessageStatus extends \Eloquent{
-
-    protected $table = 'messages_status';
+class ConversationUsers  extends \Eloquent{
+    protected $table = 'conv_users';
     public $timestamps = false;
 
     public function __construct() {
-
     }
 } 

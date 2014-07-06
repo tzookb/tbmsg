@@ -29,9 +29,15 @@ class TBMsgServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+        $this->app->bind(
+            'Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository',
+            'Tzookb\TBMsg\Repositories\EloquentTBMsgRepository');
+
         // Register 'tbmsg'
         $this->app['tbmsg'] = $this->app->share(function($app) {
-            return new TBMsg();
+            return new TBMsg(
+                $app['Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository']
+            );
         });
 	}
 

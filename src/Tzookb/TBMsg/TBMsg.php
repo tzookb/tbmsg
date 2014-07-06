@@ -6,12 +6,16 @@ use DB;
 use Config;
 use Illuminate\Support\Collection;
 use Tzookb\TBMsg\Exceptions\NotEnoughUsersInConvException;
-use Tzookb\TBMsg\Repositories\Eloquent\Objects\ConversationUsers;
-use Tzookb\TBMsg\Repositories\Eloquent\Objects\MessageStatus;
+use Tzookb\TBMsg\Exceptions\UserNotInConvException;
+
 use Tzookb\TBMsg\Entities\Conversation;
 use Tzookb\TBMsg\Entities\Message;
-use Tzookb\TBMsg\Repositories\Eloquent\Objects\Message as MessageOld;
-use Tzookb\TBMsg\Repositories\Eloquent\Objects\Conversation as ConversationOld;
+
+use Tzookb\TBMsg\Models\Eloquent\Message as MessageEloquent;
+use Tzookb\TBMsg\Models\Eloquent\Conversation as ConversationEloquent;
+use Tzookb\TBMsg\Models\Eloquent\ConversationUsers;
+use Tzookb\TBMsg\Models\Eloquent\MessageStatus;
+use Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository;
 
 class TBMsg {
 
@@ -19,11 +23,17 @@ class TBMsg {
     const UNREAD = 1;
     const READ = 2;
     const ARCHIVED = 3;
-    private $usersTable;
+    protected $usersTable;
+    protected $usersTableKey;
+    /**
+     * @var Repositories\Contracts\iTBMsgRepository
+     */
+    protected $tbmRepo;
 
-    public function __construct() {
+    public function __construct(iTBMsgRepository $tbmRepo) {
         $this->usersTable = Config::get('tbmsg.usersTable', 'users');
         $this->usersTableKey = Config::get('tbmsg.usersTableKey', 'id');
+        $this->tbmRepo = $tbmRepo;
     }
 
     public function getUserConversations($user_id) {
@@ -165,10 +175,10 @@ class TBMsg {
     public function addMessageToConversation($conv_id, $user_id, $content) {
         //check if user of message is in conversation
         if ( !$this->isUserInConversation($conv_id, $user_id) )
-            return false;
+            throw new UserNotInConvException;
 
         //if so add new message
-        $message = new MessageOld();
+        $message = new MessageEloquent();
         $message->sender_id = $user_id;
         $message->conv_id = $conv_id;
         $message->content = $content;
@@ -199,12 +209,12 @@ class TBMsg {
     /**
      * @param array $users_ids
      * @throws Exceptions\NotEnoughUsersInConvException
-     * @return ConversationOld
+     * @return ConversationEloquent
      */
     public function createConversation( $users_ids ) {
         if ( count($users_ids ) > 1 ) {
             //create new conv
-            $conv = new ConversationOld();
+            $conv = new ConversationEloquent();
             $conv->save();
 
             //get the id of conv, and add foreach user a line in conv_users

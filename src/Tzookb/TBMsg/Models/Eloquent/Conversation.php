@@ -1,5 +1,5 @@
 <?php
-namespace Tzookb\TBMsg\Repositories\Eloquent\Objects;
+namespace Tzookb\TBMsg\Models\Eloquent;
 /**
  * Created by PhpStorm.
  * User: tzookb
