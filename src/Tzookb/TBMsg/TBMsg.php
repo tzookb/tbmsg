@@ -25,6 +25,7 @@ class TBMsg {
     const ARCHIVED = 3;
     protected $usersTable;
     protected $usersTableKey;
+    protected $tablePrefix;
     /**
      * @var Repositories\Contracts\iTBMsgRepository
      */
@@ -33,6 +34,7 @@ class TBMsg {
     public function __construct(iTBMsgRepository $tbmRepo) {
         $this->usersTable = Config::get('tbmsg.usersTable', 'users');
         $this->usersTableKey = Config::get('tbmsg.usersTableKey', 'id');
+        $this->tablePrefix = Config::get('tbmsg.tablePrefix', '');
         $this->tbmRepo = $tbmRepo;
     }
 
@@ -43,14 +45,14 @@ class TBMsg {
         $convs = DB::select(
             '
             SELECT msg.conv_id as conv_id, msg.created_at, msg.id msgId, msg.content, mst.status, mst.self, us.'.$this->usersTableKey.' userId
-            FROM messages msg
+            FROM '.$this->tablePrefix.'messages msg
             INNER JOIN (
                 SELECT MAX(created_at) created_at
-                FROM messages
+                FROM '.$this->tablePrefix.'messages
                 GROUP BY conv_id
             ) m2 ON msg.created_at = m2.created_at
-            INNER JOIN messages_status mst ON msg.id=mst.msg_id
-            INNER JOIN '.$this->usersTable.' us ON msg.sender_id=us.'.$this->usersTableKey.'
+            INNER JOIN '.$this->tablePrefix.'messages_status mst ON msg.id=mst.msg_id
+            INNER JOIN '.$this->tablePrefix.$this->usersTable.' us ON msg.sender_id=us.'.$this->usersTableKey.'
             WHERE mst.user_id = ? AND mst.status NOT IN (?, ?)
             ORDER BY msg.created_at DESC
             '
@@ -85,8 +87,8 @@ class TBMsg {
             $usersInConvs = DB::select(
                 '
                 SELECT cu.conv_id, us.'.$this->usersTableKey.'
-                FROM conv_users cu
-                INNER JOIN '.$this->usersTable.' us
+                FROM '.$this->tablePrefix.'conv_users cu
+                INNER JOIN '.$this->tablePrefix.$this->usersTable.' us
                 ON cu.user_id=us.'.$this->usersTableKey.'
                 WHERE cu.conv_id IN('.$convsIds.')
             '
@@ -110,6 +112,7 @@ class TBMsg {
     /**
      * @param $conv_id
      * @param $user_id
+     * @param bool $newToOld
      * @return Conversation
      */
     public function getConversationMessages($conv_id, $user_id, $newToOld=true) {
@@ -120,10 +123,10 @@ class TBMsg {
         $results = DB::select(
             '
             SELECT msg.id as msgId, msg.content, msg.created_at, us.'.$this->usersTableKey.' as userId
-            FROM messages_status mst
-            INNER JOIN messages msg
+            FROM '.$this->tablePrefix.'messages_status mst
+            INNER JOIN '.$this->tablePrefix.'messages msg
             ON mst.msg_id=msg.id
-            INNER JOIN '.$this->usersTable.' us
+            INNER JOIN '.$this->tablePrefix.$this->usersTable.' us
             ON msg.sender_id=us.'.$this->usersTableKey.'
             WHERE msg.conv_id=?
             AND mst.user_id = ?
@@ -252,7 +255,7 @@ class TBMsg {
     public function markReadAllMessagesInConversation($conv_id, $user_id) {
         DB::statement(
             '
-            UPDATE messages_status mst
+            UPDATE '.$this->tablePrefix.'messages_status mst
             SET mst.status=?
             WHERE mst.user_id=?
             AND mst.status=?
@@ -270,7 +273,7 @@ class TBMsg {
     public function deleteConversation($conv_id, $user_id) {
         DB::statement(
             '
-            UPDATE messages_status mst
+            UPDATE '.$this->tablePrefix.'messages_status mst
             SET mst.status='.self::DELETED.'
             WHERE mst.user_id=?
             AND mst.status=?
@@ -288,7 +291,7 @@ class TBMsg {
         $results = DB::select(
             '
             SELECT COUNT(cu.conv_id)
-            FROM conv_users cu
+            FROM '.$this->tablePrefix.'conv_users cu
             WHERE cu.user_id=?
             AND cu.conv_id=?
             HAVING COUNT(cu.conv_id)>0
@@ -304,7 +307,7 @@ class TBMsg {
         $results = DB::select(
             '
             SELECT cu.user_id
-            FROM conv_users cu
+            FROM '.$this->tablePrefix.'conv_users cu
             WHERE cu.conv_id=?
             ',
             array($conv_id)
@@ -321,7 +324,7 @@ class TBMsg {
         $results = DB::select(
             '
             SELECT COUNT(mst.id) as numOfUnread
-            FROM messages_status mst
+            FROM '.$this->tablePrefix.'messages_status mst
             WHERE mst.user_id=?
             AND mst.status=?
             ',
