@@ -282,14 +282,13 @@ class TBMsg {
             UPDATE '.$this->tablePrefix.'messages_status mst
             SET mst.status='.self::DELETED.'
             WHERE mst.user_id=?
-            AND mst.status=?
             AND mst.msg_id IN (
               SELECT msg.id
               FROM messages msg
               WHERE msg.conv_id=?
             )
             ',
-            array($user_id, self::UNREAD, $conv_id)
+            array($user_id, $conv_id)
         );
     }
 
