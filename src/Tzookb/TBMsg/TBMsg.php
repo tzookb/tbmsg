@@ -213,6 +213,15 @@ class TBMsg {
             }
             $messageStatus->save();
         }
+
+        $eventData = [
+            'senderId' => $user_id,
+            'convUsersIds' =>$usersInConv,
+            'content' => $content,
+            'convId' => $conv_id
+        ];
+
+        $this->dispatcher->fire('message.sent',[$eventData]);
     }
 
 
@@ -238,6 +247,11 @@ class TBMsg {
 
                 }
             }
+            $eventData = [
+                'usersIds' => $users_ids,
+                'convId' => $conv->id
+            ];
+            $this->dispatcher->fire('conversation.created',[$eventData]);
             return $conv;
         } else
             throw new NotEnoughUsersInConvException;
