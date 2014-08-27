@@ -128,7 +128,7 @@ class TBMsg {
             $orderBy = 'asc';
         $results = DB::select(
             '
-            SELECT msg.id as msgId, msg.content, msg.created_at, us.'.$this->usersTableKey.' as userId
+            SELECT msg.id as msgId, msg.content, mst.status, msg.created_at, us.'.$this->usersTableKey.' as userId
             FROM '.$this->tablePrefix.'messages_status mst
             INNER JOIN '.$this->tablePrefix.'messages msg
             ON mst.msg_id=msg.id
@@ -149,6 +149,7 @@ class TBMsg {
             $msg->setContent( $row->content );
             $msg->setCreated( $row->created_at );
             $msg->setSender( $row->userId );
+            $msg->setStatus($row->status);
             $conversation->addMessage( $msg );
         }
 
