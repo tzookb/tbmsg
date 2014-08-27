@@ -4,6 +4,7 @@ namespace Tzookb\TBMsg;
 
 use DB;
 use Config;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Collection;
 use Tzookb\TBMsg\Exceptions\NotEnoughUsersInConvException;
 use Tzookb\TBMsg\Exceptions\UserNotInConvException;
@@ -30,12 +31,17 @@ class TBMsg {
      * @var Repositories\Contracts\iTBMsgRepository
      */
     protected $tbmRepo;
+    /**
+     * @var Dispatcher
+     */
+    protected $dispatcher;
 
-    public function __construct(iTBMsgRepository $tbmRepo) {
+    public function __construct(iTBMsgRepository $tbmRepo, Dispatcher $dispatcher) {
         $this->usersTable = Config::get('tbmsg.usersTable', 'users');
         $this->usersTableKey = Config::get('tbmsg.usersTableKey', 'id');
         $this->tablePrefix = Config::get('tbmsg.tablePrefix', '');
         $this->tbmRepo = $tbmRepo;
+        $this->dispatcher = $dispatcher;
     }
 
     public function getUserConversations($user_id) {
@@ -330,7 +336,6 @@ class TBMsg {
             ',
             array($user_id, self::UNREAD)
         );
-
-        return $results[0]->numOfUnread;
+        return (isset($results[0]))? $results[0]->numOfUnread : 0;
     }
 } 
