@@ -58,7 +58,7 @@ class TBMsg {
                 GROUP BY conv_id
             ) m2 ON msg.created_at = m2.created_at
             INNER JOIN '.$this->tablePrefix.'messages_status mst ON msg.id=mst.msg_id
-            INNER JOIN '.$this->tablePrefix.$this->usersTable.' us ON msg.sender_id=us.'.$this->usersTableKey.'
+            INNER JOIN '.$this->usersTable.' us ON msg.sender_id=us.'.$this->usersTableKey.'
             WHERE mst.user_id = ? AND mst.status NOT IN (?, ?)
             ORDER BY msg.created_at DESC
             '
@@ -94,7 +94,7 @@ class TBMsg {
                 '
                 SELECT cu.conv_id, us.'.$this->usersTableKey.'
                 FROM '.$this->tablePrefix.'conv_users cu
-                INNER JOIN '.$this->tablePrefix.$this->usersTable.' us
+                INNER JOIN '.$this->usersTable.' us
                 ON cu.user_id=us.'.$this->usersTableKey.'
                 WHERE cu.conv_id IN('.$convsIds.')
             '
@@ -132,7 +132,7 @@ class TBMsg {
             FROM '.$this->tablePrefix.'messages_status mst
             INNER JOIN '.$this->tablePrefix.'messages msg
             ON mst.msg_id=msg.id
-            INNER JOIN '.$this->tablePrefix.$this->usersTable.' us
+            INNER JOIN '.$this->usersTable.' us
             ON msg.sender_id=us.'.$this->usersTableKey.'
             WHERE msg.conv_id=?
             AND mst.user_id = ?
