@@ -44,6 +44,18 @@ class TBMsg {
         $this->dispatcher = $dispatcher;
     }
 
+    public function markMessageAs($msgId, $userId, $status) {
+        DB::statement(
+            '
+            UPDATE '.$this->tablePrefix.'messages_status mst
+            SET mst.status=?
+            WHERE mst.user_id=?
+            AND mst.msg_id=?
+            ',
+            array($status, $userId, $msgId)
+        );
+    }
+
     public function getUserConversations($user_id) {
         $return = array();
         $conversations = new Collection();
@@ -272,6 +284,7 @@ class TBMsg {
         //add message to new conversation
         $this->addMessageToConversation($conv, $senderId, $content);
     }
+
 
     public function markReadAllMessagesInConversation($conv_id, $user_id) {
         DB::statement(
