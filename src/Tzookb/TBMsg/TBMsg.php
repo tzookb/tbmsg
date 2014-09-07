@@ -37,9 +37,9 @@ class TBMsg {
     protected $dispatcher;
 
     public function __construct(iTBMsgRepository $tbmRepo, Dispatcher $dispatcher) {
-        $this->usersTable = Config::get('tbmsg.usersTable', 'users');
-        $this->usersTableKey = Config::get('tbmsg.usersTableKey', 'id');
-        $this->tablePrefix = Config::get('tbmsg.tablePrefix', '');
+        $this->usersTable = Config::get('tbmsg::config.usersTable', 'users');
+        $this->usersTableKey = Config::get('tbmsg::config.usersTableKey', 'id');
+        $this->tablePrefix = Config::get('tbmsg::config.tablePrefix', '');
         $this->tbmRepo = $tbmRepo;
         $this->dispatcher = $dispatcher;
     }
@@ -365,4 +365,4 @@ class TBMsg {
         );
         return (isset($results[0]))? $results[0]->numOfUnread : 0;
     }
-} 
+}
