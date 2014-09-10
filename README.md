@@ -3,6 +3,8 @@ Laravel User Messaging system
 
 PHP multi user multi conversations messaging system, just like facebook :)
 
+** just wanted to thank everyone for the feedback, and great bugs!
+I'm still working hard to improve it, and I wanted to invite you all to the website that is the reason for me to create this package, and of course you could test it there:  http://bloompy.co
 Description:
 ----------------
 
