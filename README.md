@@ -183,3 +183,33 @@ return an integer of number of unread messages for specific user.
 ```php
         $conv = TBMsg::markReadAllMessagesInConversation($conv_id, $user_id);
 ```
+
+## Example
+```php
+        public function conversations($convId=null) {
+            $currentUser = Auth::user();
+            //get the conversations
+            $convs = TBMsg::getUserConversations( $currentUser->id );
+            //array for storing our users data, as that Tbmsg only provides user id's
+            $participants = [];
+    
+            //gathering participants
+            foreach ( $convs as $conv ) {
+                $participants = array_merge($participants, $conv->getAllParticipants());
+            }
+            //making sure each user appears once
+            $participants = array_unique($participants);
+    
+            //getting all data of participants
+            $viewUsers = [];
+            if ( !empty($participants) ) {
+                $users = User::whereIn('id', $participants)->with('profileImage')->getDictionary();
+                
+            }
+            
+            return View::make('conversations_page')
+                ->with('users', $users)
+                ->with('user', $currentUser)
+                ->with('convs', $convs);
+        }
+```
