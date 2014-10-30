@@ -148,7 +148,7 @@ returns an array of user id in the conversation.
 
 
 
-#### Get all users in conversation:
+#### Delete conversation:
 
 ```php
         $conv = TBMsg::deleteConversation($conv_id, $user_id);
