@@ -25,7 +25,10 @@
     "autoload": {    
         "psr-0": {
             "Tzookb\\TBMsg": "src/"
-        }
+        },
+        "classmap": [
+            "tests/TestCase.php"
+        ]
     },    
     "minimum-stability": "dev"    
 }

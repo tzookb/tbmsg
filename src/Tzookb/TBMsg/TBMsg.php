@@ -6,6 +6,7 @@ use DB;
 use Config;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Collection;
+use Tzookb\TBMsg\Exceptions\ConversationNotFoundException;
 use Tzookb\TBMsg\Exceptions\NotEnoughUsersInConvException;
 use Tzookb\TBMsg\Exceptions\UserNotInConvException;
 
@@ -45,15 +46,7 @@ class TBMsg {
     }
 
     public function markMessageAs($msgId, $userId, $status) {
-        DB::statement(
-            '
-            UPDATE '.$this->tablePrefix.'messages_status mst
-            SET mst.status=?
-            WHERE mst.user_id=?
-            AND mst.msg_id=?
-            ',
-            array($status, $userId, $msgId)
-        );
+        $this->tbmRepo->markMessageAs($msgId, $userId, $status);
     }
 
     public function getUserConversations($user_id) {
@@ -176,22 +169,16 @@ class TBMsg {
     /**
      * @param $userA_id
      * @param $userB_id
+     * @throws ConversationNotFoundException
      * @return mixed -> id of conversation or false on not found
      */
     public function getConversationByTwoUsers($userA_id, $userB_id) {
-        $results = DB::select(
-            '
-            SELECT cu.conv_id
-            FROM conv_users cu
-            WHERE cu.user_id=? OR cu.user_id=?
-            GROUP BY cu.conv_id
-            HAVING COUNT(cu.conv_id)=2
-            '
-            , array($userA_id, $userB_id));
-        if( count($results) == 1 ) {
-            return (int)$results[0]->conv_id;
-        }
-        return -1;
+        $conv = $this->tbmRepo->getConversationByTwoUsers($userA_id, $userB_id);
+
+        if ($conv == -1)
+            throw new ConversationNotFoundException;
+
+        return $conv;
     }
 
     public function addMessageToConversation($conv_id, $user_id, $content) {

@@ -11,4 +11,6 @@ namespace Tzookb\TBMsg\Repositories\Contracts;
 
 interface iTBMsgRepository {
 
+    public function getConversationByTwoUsers($userA_id, $userB_id);
+    public function markMessageAs($msgId, $userId, $status);
 } 
