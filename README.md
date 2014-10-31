@@ -5,6 +5,11 @@ PHP multi user multi conversations messaging system, just like facebook :)
 
 ** just wanted to thank everyone for the feedback, and great bugs!
 I'm still working hard to improve it, and I wanted to invite you all to the website that is the reason for me to create this package, and of course you could test it there:  http://bloompy.co
+
+Currently hapening:
+----------------
+I noticed many people like this package so I now am upgrading it with tests and better structure, anyone who has any ideas or wants to contribute I would be more than happy :)
+
 Description:
 ----------------
 
