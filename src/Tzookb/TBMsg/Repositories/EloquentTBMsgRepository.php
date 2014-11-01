@@ -52,7 +52,7 @@ class EloquentTBMsgRepository implements iTBMsgRepository
                 'usersIds' => $users_ids,
                 'convId' => $conv->id
             ];
-            $this->dispatcher->fire('conversation.created',[$eventData]);
+            //$this->dispatcher->fire('conversation.created',[$eventData]);
             return $conv;
         } else
             throw new NotEnoughUsersInConvException;
@@ -219,4 +219,58 @@ class EloquentTBMsgRepository implements iTBMsgRepository
         );
     }
 
-} 
+    public function getConversationMessages($conv_id, $user_id, $newToOld = true)
+    {
+        if ( $newToOld )
+            $orderBy = 'desc';
+        else
+            $orderBy = 'asc';
+
+        return DB::select(
+            '
+            SELECT msg.id as msgId, msg.content, mst.status, msg.created_at, us.'.$this->usersTableKey.' as userId
+            FROM '.$this->tablePrefix.'messages_status mst
+            INNER JOIN '.$this->tablePrefix.'messages msg
+            ON mst.msg_id=msg.id
+            INNER JOIN '.$this->usersTable.' us
+            ON msg.sender_id=us.'.$this->usersTableKey.'
+            WHERE msg.conv_id=?
+            AND mst.user_id = ?
+            AND mst.status NOT IN (?,?)
+            ORDER BY msg.created_at '.$orderBy.'
+            '
+            , array($conv_id, $user_id, self::DELETED, self::ARCHIVED));
+    }
+
+    public function getConversations($user_id)
+    {
+        return DB::select(
+            '
+            SELECT msg.conv_id as conv_id, msg.created_at, msg.id msgId, msg.content, mst.status, mst.self, us.'.$this->usersTableKey.' userId
+            FROM '.$this->tablePrefix.'messages msg
+            INNER JOIN (
+                SELECT MAX(created_at) created_at
+                FROM '.$this->tablePrefix.'messages
+                GROUP BY conv_id
+            ) m2 ON msg.created_at = m2.created_at
+            INNER JOIN '.$this->tablePrefix.'messages_status mst ON msg.id=mst.msg_id
+            INNER JOIN '.$this->usersTable.' us ON msg.sender_id=us.'.$this->usersTableKey.'
+            WHERE mst.user_id = ? AND mst.status NOT IN (?, ?)
+            ORDER BY msg.created_at DESC
+            '
+            , array($user_id, self::DELETED, self::ARCHIVED));
+    }
+
+    public function getUsersInConvs($convsIds)
+    {
+        return DB::select(
+            '
+                SELECT cu.conv_id, us.'.$this->usersTableKey.'
+                FROM '.$this->tablePrefix.'conv_users cu
+                INNER JOIN '.$this->usersTable.' us
+                ON cu.user_id=us.'.$this->usersTableKey.'
+                WHERE cu.conv_id IN('.$convsIds.')
+            '
+            , array());
+    }
+}

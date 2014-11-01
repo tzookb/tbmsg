@@ -26,6 +26,10 @@ interface iTBMsgRepository {
     public function markReadAllMessagesInConversation($conv_id, $user_id);
     public function deleteConversation($conv_id, $user_id);
 
+    public function getConversationMessages($conv_id, $user_id, $newToOld=true);
+    public function getConversations($user_id);
+    public function getUsersInConvs($convsIds);
+
     public function markMessageAs($msgId, $userId, $status);
     public function markMessageAsRead($msgId, $userId);
     public function markMessageAsUnread($msgId, $userId);
