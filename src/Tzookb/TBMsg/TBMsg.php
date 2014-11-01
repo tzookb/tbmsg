@@ -45,8 +45,24 @@ class TBMsg {
         $this->dispatcher = $dispatcher;
     }
 
+    /********************************************************************************/
+    /******************   Change message status   ***********************************/
+    /********************************************************************************/
+
     public function markMessageAs($msgId, $userId, $status) {
         $this->tbmRepo->markMessageAs($msgId, $userId, $status);
+    }
+    public function markMessageAsRead($msgId, $userId) {
+        $this->tbmRepo->markMessageAsRead($msgId, $userId);
+    }
+    public function markMessageAsUnread($msgId, $userId) {
+        $this->tbmRepo->markMessageAsUnread($msgId, $userId);
+    }
+    public function markMessageAsDeleted($msgId, $userId) {
+        $this->tbmRepo->markMessageAsDeleted($msgId, $userId);
+    }
+    public function markMessageAsArchived($msgId, $userId) {
+        $this->tbmRepo->markMessageAsArchived($msgId, $userId);
     }
 
     public function getUserConversations($user_id) {
@@ -175,50 +191,11 @@ class TBMsg {
     public function getConversationByTwoUsers($userA_id, $userB_id) {
         $conv = $this->tbmRepo->getConversationByTwoUsers($userA_id, $userB_id);
 
-        if ($conv == -1)
-            throw new ConversationNotFoundException;
-
         return $conv;
     }
 
     public function addMessageToConversation($conv_id, $user_id, $content) {
-        //check if user of message is in conversation
-        if ( !$this->isUserInConversation($conv_id, $user_id) )
-            throw new UserNotInConvException;
-
-        //if so add new message
-        $message = new MessageEloquent();
-        $message->sender_id = $user_id;
-        $message->conv_id = $conv_id;
-        $message->content = $content;
-        $message->save();
-
-        //get all users in conversation
-        $usersInConv = $this->getUsersInConversation($conv_id);
-
-        //and add msg status for each user in conversation
-        foreach ( $usersInConv as $userInConv ) {
-            $messageStatus = new MessageStatus();
-            $messageStatus->user_id = $userInConv;
-            $messageStatus->msg_id = $message->id;
-            if ( $userInConv == $user_id ) {
-                //its the sender user
-                $messageStatus->self = 1;
-                $messageStatus->status = self::READ;
-            } else {
-                //other users in conv
-                $messageStatus->self = 0;
-                $messageStatus->status = self::UNREAD;
-            }
-            $messageStatus->save();
-        }
-
-        $eventData = [
-            'senderId' => $user_id,
-            'convUsersIds' =>$usersInConv,
-            'content' => $content,
-            'convId' => $conv_id
-        ];
+        $eventData = $this->tbmRepo->addMessageToConversation($conv_id, $user_id, $content);
 
         $this->dispatcher->fire('message.sent',[$eventData]);
     }
@@ -230,126 +207,42 @@ class TBMsg {
      * @return ConversationEloquent
      */
     public function createConversation( $users_ids ) {
-        if ( count($users_ids ) > 1 ) {
-            //create new conv
-            $conv = new ConversationEloquent();
-            $conv->save();
-
-            //get the id of conv, and add foreach user a line in conv_users
-            foreach ( $users_ids as $user_id ) {
-                $conv_user = new ConversationUsers();
-                $conv_user->conv_id = $conv->id;
-                $conv_user->user_id = $user_id;
-                try{
-                    $conv_user->save();
-                } catch ( \Exception $ex ) {
-
-                }
-            }
-            $eventData = [
-                'usersIds' => $users_ids,
-                'convId' => $conv->id
-            ];
-            $this->dispatcher->fire('conversation.created',[$eventData]);
-            return $conv;
-        } else
-            throw new NotEnoughUsersInConvException;
+       $this->tbmRepo->createConversation($users_ids);
     }
 
     public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content)
     {
         //get conversation by two users
-        $conv = $this->getConversationByTwoUsers($senderId, $receiverId);
-
-        //if conversation doesnt exist, create it
-        if ( $conv == -1 )
-        {
-            $conv = $this->createConversation([$senderId, $receiverId]);
+        try {
+            $conv = $this->tbmRepo->getConversationByTwoUsers($senderId, $receiverId);
+        } catch (ConversationNotFoundException $ex) {
+            //if conversation doesnt exist, create it
+            $conv = $this->tbmRepo->createConversation([$senderId, $receiverId]);
             $conv = $conv->id;
         }
 
         //add message to new conversation
-        $this->addMessageToConversation($conv, $senderId, $content);
+        $this->tbmRepo->addMessageToConversation($conv, $senderId, $content);
     }
 
 
     public function markReadAllMessagesInConversation($conv_id, $user_id) {
-        DB::statement(
-            '
-            UPDATE '.$this->tablePrefix.'messages_status mst
-            SET mst.status=?
-            WHERE mst.user_id=?
-            AND mst.status=?
-            AND mst.msg_id IN (
-              SELECT msg.id
-              FROM messages msg
-              WHERE msg.conv_id=?
-              AND msg.sender_id!=?
-            )
-            ',
-            array(self::READ, $user_id, self::UNREAD, $conv_id, $user_id)
-        );
+        $this->tbmRepo->markReadAllMessagesInConversation($conv_id, $user_id);
     }
 
     public function deleteConversation($conv_id, $user_id) {
-        DB::statement(
-            '
-            UPDATE '.$this->tablePrefix.'messages_status mst
-            SET mst.status='.self::DELETED.'
-            WHERE mst.user_id=?
-            AND mst.msg_id IN (
-              SELECT msg.id
-              FROM messages msg
-              WHERE msg.conv_id=?
-            )
-            ',
-            array($user_id, $conv_id)
-        );
+        $this->tbmRepo->deleteConversation($conv_id, $user_id);
     }
 
     public function isUserInConversation($conv_id, $user_id) {
-        $results = DB::select(
-            '
-            SELECT COUNT(cu.conv_id)
-            FROM '.$this->tablePrefix.'conv_users cu
-            WHERE cu.user_id=?
-            AND cu.conv_id=?
-            HAVING COUNT(cu.conv_id)>0
-            ',
-            array($user_id, $conv_id)
-        );
-        if ( empty($results) )
-            return false;
-        return true;
+        return $this->tbmRepo->isUserInConversation($conv_id, $user_id);
     }
 
     public function getUsersInConversation($conv_id) {
-        $results = DB::select(
-            '
-            SELECT cu.user_id
-            FROM '.$this->tablePrefix.'conv_users cu
-            WHERE cu.conv_id=?
-            ',
-            array($conv_id)
-        );
-
-        $usersInConvIds = array();
-        foreach ( $results as $row ) {
-            $usersInConvIds[] = $row->user_id;
-        }
-        return $usersInConvIds;
+        return $this->tbmRepo->getUsersInConversation($conv_id);
     }
 
     public function getNumOfUnreadMsgs($user_id) {
-        $results = DB::select(
-            '
-            SELECT COUNT(mst.id) as numOfUnread
-            FROM '.$this->tablePrefix.'messages_status mst
-            WHERE mst.user_id=?
-            AND mst.status=?
-            ',
-            array($user_id, self::UNREAD)
-        );
-        return (isset($results[0]))? $results[0]->numOfUnread : 0;
+        return $this->tbmRepo->getNumOfUnreadMsgs($user_id);
     }
 }
