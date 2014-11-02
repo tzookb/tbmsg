@@ -16,13 +16,19 @@
         "php": ">=5.3",
         "illuminate/events": "*"
     },
-    "require-dev": {},
+    "require-dev": {
+        "mockery/mockery": "dev-master",
+        "phpunit/phpunit": "4.3.*"
+    },
     "require-all": true,
 
     "autoload": {    
         "psr-0": {
             "Tzookb\\TBMsg": "src/"
-        }
+        },
+        "classmap": [
+            "tests/TestCase.php"
+        ]
     },    
     "minimum-stability": "dev"    
 }
