@@ -303,6 +303,24 @@ class TBMsg {
             array(self::READ, $user_id, self::UNREAD, $conv_id, $user_id)
         );
     }
+    
+    public function markUnreadAllMessagesInConversation($conv_id, $user_id) {
+        DB::statement(
+            '
+            UPDATE messages_status mst
+            SET mst.status=?
+            WHERE mst.user_id=?
+            AND mst.status=?
+            AND mst.msg_id IN (
+              SELECT msg.id
+              FROM messages msg
+              WHERE msg.conv_id=?
+              AND msg.sender_id!=?
+            )
+            ',
+            array(self::UNREAD, $user_id, self::READ, $conv_id, $user_id)
+        );
+    }
 
     public function deleteConversation($conv_id, $user_id) {
         DB::statement(
