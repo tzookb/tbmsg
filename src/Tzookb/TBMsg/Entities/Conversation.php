@@ -73,7 +73,11 @@ class Conversation {
     {
         return $this->messages;
     }
-
+    
+    function getFirstMessage()
+    {
+        return $this->messages->first();
+    }
 
     function getLastMessage()
     {
