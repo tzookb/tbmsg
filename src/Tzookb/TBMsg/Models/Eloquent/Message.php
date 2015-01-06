@@ -1,5 +1,6 @@
 <?php
 namespace Tzookb\TBMsg\Models\Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Created by PhpStorm.
@@ -8,7 +9,7 @@ namespace Tzookb\TBMsg\Models\Eloquent;
  * Time: 6:20 PM
  */
 
-class Message extends \Eloquent{
+class Message extends Model {
 
     public function __construct() {
 

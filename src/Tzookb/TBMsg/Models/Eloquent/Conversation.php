@@ -1,5 +1,7 @@
 <?php
 namespace Tzookb\TBMsg\Models\Eloquent;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Created by PhpStorm.
  * User: tzookb
@@ -7,7 +9,7 @@ namespace Tzookb\TBMsg\Models\Eloquent;
  * Time: 6:20 PM
  */
 
-class Conversation  extends \Eloquent{
+class Conversation  extends Model {
 
     public function __construct() {
 

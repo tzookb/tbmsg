@@ -14,15 +14,25 @@
     ],
     "require": {
         "php": ">=5.3",
-        "illuminate/events": "*"
+        "illuminate/events": "*",
+        "illuminate/database": "~5.0@dev"
     },
-    "require-dev": {},
+    "require-dev": {
+        "mockery/mockery": "dev-master",
+        "phpunit/phpunit": "4.3.*",
+        "illuminate/filesystem": "5.0.*",
+        "league/factory-muffin": "~2.0"
+    },
     "require-all": true,
 
     "autoload": {    
         "psr-0": {
             "Tzookb\\TBMsg": "src/"
-        }
+        },
+        "classmap": [
+            "tests/TestCaseDb.php",
+            "src/migrations/"
+        ]
     },    
     "minimum-stability": "dev"    
 }

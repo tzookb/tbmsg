@@ -1,6 +1,7 @@
 <?php namespace Tzookb\TBMsg;
 
 use Illuminate\Support\ServiceProvider;
+use Tzookb\TBMsg\Repositories\EloquentTBMsgRepository;
 
 
 class TBMsgServiceProvider extends ServiceProvider {
@@ -29,9 +30,15 @@ class TBMsgServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-        $this->app->bind(
-            'Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository',
-            'Tzookb\TBMsg\Repositories\EloquentTBMsgRepository');
+        $usersTable = \Config::get('tbmsg::config.usersTable', 'users');
+        $usersTableKey = \Config::get('tbmsg::config.usersTableKey', 'id');
+        $tablePrefix = \Config::get('tbmsg::config.tablePrefix', '');
+
+        $this->app->bind('Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository',
+            function($app) use($tablePrefix, $usersTable, $usersTableKey) {
+				$db = $app->make('Illuminate\Database\DatabaseManager');
+                return new EloquentTBMsgRepository($tablePrefix, $usersTable, $usersTableKey, $db);
+            });
 
         // Register 'tbmsg'
         $this->app['tbmsg'] = $this->app->share(function($app) {
