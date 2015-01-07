@@ -15,12 +15,12 @@
     "require": {
         "php": ">=5.3",
         "illuminate/events": "*",
-        "illuminate/database": "~5.0@dev"
+        "illuminate/database": "4.*"
     },
     "require-dev": {
         "mockery/mockery": "dev-master",
         "phpunit/phpunit": "4.3.*",
-        "illuminate/filesystem": "5.0.*",
+        "illuminate/filesystem": "4.*",
         "league/factory-muffin": "~2.0"
     },
     "require-all": true,
