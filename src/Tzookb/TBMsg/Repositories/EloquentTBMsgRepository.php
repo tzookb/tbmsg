@@ -233,7 +233,7 @@ class EloquentTBMsgRepository implements iTBMsgRepository
 
         return $this->db->select(
             '
-            SELECT msg.id as msgId, msg.content, mst.status, msg.created_at, mst.user_id as userId
+            SELECT msg.id as msgId, msg.content, mst.status, msg.created_at, msg.sender_id as userId
             FROM '.$this->tablePrefix.'messages_status mst
             INNER JOIN '.$this->tablePrefix.'messages msg
             ON mst.msg_id=msg.id
