@@ -1,6 +1,11 @@
 Laravel User Messaging system
 ===============================
 
+[![Total Downloads](https://poser.pugx.org/tzookb/tbmsg/downloads.svg)](https://packagist.org/packages/tzookb/tbmsg)
+[![Latest Stable Version](https://poser.pugx.org/tzookb/tbmsg/v/stable.svg)](https://packagist.org/packages/tzookb/tbmsg)
+[![Latest Unstable Version](https://poser.pugx.org/tzookb/tbmsg/v/unstable.svg)](https://packagist.org/packages/tzookb/tbmsg)
+[![License](https://poser.pugx.org/tzookb/tbmsg/license.svg)](https://packagist.org/packages/tzookb/tbmsg)
+
 PHP multi user multi conversations messaging system, just like facebook :)
 
 ** just wanted to thank everyone for the feedback, and great bugs!
