@@ -37,44 +37,78 @@ class TBMsg {
      */
     protected $dispatcher;
 
+    /**
+     * @param iTBMsgRepository $tbmRepo
+     * @param Dispatcher $dispatcher
+     */
     public function __construct(iTBMsgRepository $tbmRepo, Dispatcher $dispatcher) {
         $this->tbmRepo = $tbmRepo;
         $this->dispatcher = $dispatcher;
     }
 
-    /********************************************************************************/
-    /******************   Change message status   ***********************************/
-    /********************************************************************************/
 
+    /**
+     * @param $msgId
+     * @param $userId
+     * @param $status must be TBMsg consts: DELETED, UNREAD, READ, ARCHIVED
+     */
     public function markMessageAs($msgId, $userId, $status) {
         $this->tbmRepo->markMessageAs($msgId, $userId, $status);
     }
+
+    /**
+     * @param $msgId
+     * @param $userId
+     * marks specific message as read
+     */
     public function markMessageAsRead($msgId, $userId) {
         $this->tbmRepo->markMessageAsRead($msgId, $userId);
     }
+
+    /**
+     * @param $msgId
+     * @param $userId
+     * marks specific message as unread
+     */
     public function markMessageAsUnread($msgId, $userId) {
         $this->tbmRepo->markMessageAsUnread($msgId, $userId);
     }
+
+    /**
+     * @param $msgId
+     * @param $userId
+     * marks specific message as delete
+     */
     public function markMessageAsDeleted($msgId, $userId) {
         $this->tbmRepo->markMessageAsDeleted($msgId, $userId);
     }
+
+    /**
+     * @param $msgId
+     * @param $userId
+     * marks specific message as archived
+     */
     public function markMessageAsArchived($msgId, $userId) {
         $this->tbmRepo->markMessageAsArchived($msgId, $userId);
     }
 
+    /**
+     * @param $user_id
+     * @return Collection[Conversation]
+     */
     public function getUserConversations($user_id) {
-        $return = array();
+        $return = [];
         $conversations = new Collection();
 
         $convs = $this->tbmRepo->getConversations($user_id);
 
-        $convsIds = array();
+        $convsIds = [];
         foreach ( $convs as $conv ) {
             //this is for the query later
             $convsIds[] = $conv->conv_id;
 
             //this is for the return result
-            $conv->users = array();
+            $conv->users = [];
             $return[$conv->conv_id] = $conv;
 
             $conversation = new Conversation();
@@ -117,6 +151,8 @@ class TBMsg {
      * @param $user_id
      * @param bool $newToOld
      * @return Conversation
+     *
+     * return full conversation of user with his specific messages and messages statuses
      */
     public function getConversationMessages($conv_id, $user_id, $newToOld=true) {
 
@@ -145,8 +181,11 @@ class TBMsg {
     /**
      * @param $userA_id
      * @param $userB_id
+     * @return int
      * @throws ConversationNotFoundException
-     * @return mixed -> id of conversation or false on not found
+     * returns the conversation id
+     * or
+     * -1 if conversation not found
      */
     public function getConversationByTwoUsers($userA_id, $userB_id) {
         try {
@@ -154,18 +193,23 @@ class TBMsg {
         } catch (ConversationNotFoundException $ex) {
             return -1;
         }
-
-
         return $conv;
     }
 
+    /**
+     * @param $conv_id
+     * @param $user_id
+     * @param $content
+     * @return array
+     *
+     * send message to conversation from specific user, and return the new message data
+     */
     public function addMessageToConversation($conv_id, $user_id, $content) {
         $eventData = $this->tbmRepo->addMessageToConversation($conv_id, $user_id, $content);
 
         $this->dispatcher->fire('message.sent',[$eventData]);
         return  $eventData;
     }
-
 
     /**
      * @param array $users_ids
@@ -178,6 +222,15 @@ class TBMsg {
         return $eventData;
     }
 
+    /**
+     * @param $senderId
+     * @param $receiverId
+     * @param $content
+     * @return array
+     *
+     * send message to specific user from specific user, and return the new message data
+     * if conversation is not existing yet between users it will create it
+     */
     public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content)
     {
         //get conversation by two users
@@ -196,11 +249,22 @@ class TBMsg {
         return  $eventData;
     }
 
-
+    /**
+     * @param $conv_id
+     * @param $user_id
+     *
+     * mark all messages for specific user in specific conversation as read
+     */
     public function markReadAllMessagesInConversation($conv_id, $user_id) {
         $this->tbmRepo->markReadAllMessagesInConversation($conv_id, $user_id);
     }
-    
+
+    /**
+     * @param $conv_id
+     * @param $user_id
+     *
+     * mark all messages for specific user in specific conversation as unread
+     */
     public function markUnreadAllMessagesInConversation($conv_id, $user_id) {
         DB::statement(
             '
@@ -215,7 +279,7 @@ class TBMsg {
               AND msg.sender_id!=?
             )
             ',
-            array(self::UNREAD, $user_id, self::READ, $conv_id, $user_id)
+            [self::UNREAD, $user_id, self::READ, $conv_id, $user_id]
         );
     }
 
@@ -223,14 +287,33 @@ class TBMsg {
         $this->tbmRepo->deleteConversation($conv_id, $user_id);
     }
 
+    /**
+     * @param $conv_id
+     * @param $user_id
+     * @return bool
+     *
+     * checks if specific user is in specific conversation
+     */
     public function isUserInConversation($conv_id, $user_id) {
         return $this->tbmRepo->isUserInConversation($conv_id, $user_id);
     }
 
+    /**
+     * @param $conv_id
+     * @return array
+     *
+     * get an array of user id that participate in specific conversation
+     */
     public function getUsersInConversation($conv_id) {
         return $this->tbmRepo->getUsersInConversation($conv_id);
     }
 
+    /**
+     * @param $user_id
+     * @return int
+     *
+     * get number of unread messages for specific user
+     */
     public function getNumOfUnreadMsgs($user_id) {
         return $this->tbmRepo->getNumOfUnreadMsgs($user_id);
     }
