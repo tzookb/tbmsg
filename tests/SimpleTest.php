@@ -15,7 +15,7 @@ class SimpleTest extends TestCaseDb  {
 		$content = 'default content';
 
 		$data = $this->tbmsg->createConversation([$user1, $user2]);
-		$createdConvId = $data->id;
+		$createdConvId = $data['convId'];
 
 		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $content);
 
@@ -45,7 +45,7 @@ class SimpleTest extends TestCaseDb  {
 		$content = 'default content';
 
 		$data = $this->tbmsg->createConversation([$user1, $user2]);
-		$createdConvId = $data->id;
+		$createdConvId = $data['convId'];
 
 		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $content);
 		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $content);
@@ -64,7 +64,7 @@ class SimpleTest extends TestCaseDb  {
 		$content = 'default content';
 
 		$data = $this->tbmsg->createConversation([$user1, $user2]);
-		$createdConvId = $data->id;
+		$createdConvId = $data['convId'];
 
 		$this->assertEquals(0, $this->tbmsg->getNumOfUnreadMsgs($user2));
 
@@ -82,6 +82,20 @@ class SimpleTest extends TestCaseDb  {
 		$user1 = 4;
 		$user2 = 9;
 		$content = 'default content';
+		$dispatcher = \Mockery::mock('Illuminate\Events\Dispatcher');
+
+		$arr = [
+			'senderId' => $user1,
+			'convUsersIds' => [$user1, $user2],
+			'content' => $content,
+			'convId' => 1,
+		];
+
+		$dispatcher->shouldReceive('fire')->with('message.sent', [$arr]);
+
+		$this->tbmsg = new \Tzookb\TBMsg\TBMsg(
+			new \Tzookb\TBMsg\Repositories\EloquentTBMsgRepository('', 'users', 'id', $this->db),
+			$dispatcher);
 
 		$this->tbmsg->sendMessageBetweenTwoUsers($user1, $user2, $content);
 
@@ -99,14 +113,14 @@ class SimpleTest extends TestCaseDb  {
 		$user4 = 15;
 		$user5 = 17;
 		$data = $this->tbmsg->createConversation([$user1, $user2]);
-		$createdConvId = $data->id;
+		$createdConvId = $data['convId'];
 
 		$fullConv = $this->tbmsg->getConversationMessages($createdConvId, $user2);
 		$this->assertEquals(2, $fullConv->getNumOfParticipants());
 
 		//check 5 users
 		$data = $this->tbmsg->createConversation([$user1, $user2, $user3, $user4, $user5]);
-		$createdConvId = $data->id;
+		$createdConvId = $data['convId'];
 
 		$fullConv = $this->tbmsg->getConversationMessages($createdConvId, $user2);
 		$this->assertEquals(5, $fullConv->getNumOfParticipants());
@@ -119,7 +133,7 @@ class SimpleTest extends TestCaseDb  {
 		$user1 = 4;
 		$user2 = 9;
 		$data = $this->tbmsg->createConversation([$user1, $user2]);
-		$createdConvId = $data->id;
+		$createdConvId = $data['convId'];
 
 		$this->tbmsg->addMessageToConversation($createdConvId, $user1, 'message content');
 
@@ -139,7 +153,7 @@ class SimpleTest extends TestCaseDb  {
 		$user1 = 4;
 		$user2 = 9;
 		$data = $this->tbmsg->createConversation([$user1, $user2]);
-		$createdConvId = $data->id;
+		$createdConvId = $data['convId'];
 
 		$this->tbmsg->addMessageToConversation($createdConvId, $user1, 'message content');
 
@@ -156,8 +170,30 @@ class SimpleTest extends TestCaseDb  {
 		$user2 = 2;
 		$msgContent = 'not relevant content';
 
+		$dispatcher = \Mockery::mock('Illuminate\Events\Dispatcher');
+
+		$arr = [
+			'usersIds' => [$user1, $user2],
+			'convId' => 1,
+		];
+		$dispatcher->shouldReceive('fire')->with('conversation.created', [$arr]);
+
+		$arr = [
+			'senderId' => $user1,
+			'convUsersIds' => [$user1, $user2],
+			'content' => $msgContent,
+			'convId' => 1,
+		];
+		$dispatcher->shouldReceive('fire')->with('message.sent', [$arr]);
+
+
+
+		$this->tbmsg = new \Tzookb\TBMsg\TBMsg(
+			new \Tzookb\TBMsg\Repositories\EloquentTBMsgRepository('', 'users', 'id', $this->db),
+			$dispatcher);
+
 		$data = $this->tbmsg->createConversation([$user1, $user2]);
-		$createdConvId = $data->id;
+		$createdConvId = $data['convId'];
 
 		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $msgContent);
 
@@ -180,7 +216,7 @@ class SimpleTest extends TestCaseDb  {
 	public function get_conversation_by_2_users() {
 
 		$data = $this->tbmsg->createConversation([1,5]);
-		$createdConvId = $data->id;
+		$createdConvId = $data['convId'];
 
 		$foundConvId = $this->tbmsg->getConversationByTwoUsers(1,5);
 

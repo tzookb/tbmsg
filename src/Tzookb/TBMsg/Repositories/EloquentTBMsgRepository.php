@@ -57,7 +57,7 @@ class EloquentTBMsgRepository implements iTBMsgRepository
                 'usersIds' => $users_ids,
                 'convId' => $conv->id
             ];
-            return $conv;
+            return $eventData;
         } else
             throw new NotEnoughUsersInConvException;
     }

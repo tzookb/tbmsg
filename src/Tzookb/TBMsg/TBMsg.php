@@ -173,7 +173,9 @@ class TBMsg {
      * @return ConversationEloquent
      */
     public function createConversation( $users_ids ) {
-       return $this->tbmRepo->createConversation($users_ids);
+        $eventData = $this->tbmRepo->createConversation($users_ids);
+        $this->dispatcher->fire('conversation.created',[$eventData]);
+        return $eventData;
     }
 
     public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content)
@@ -184,11 +186,14 @@ class TBMsg {
         } catch (ConversationNotFoundException $ex) {
             //if conversation doesnt exist, create it
             $conv = $this->tbmRepo->createConversation([$senderId, $receiverId]);
-            $conv = $conv->id;
+            $conv = $conv['convId'];
         }
 
         //add message to new conversation
-        $this->tbmRepo->addMessageToConversation($conv, $senderId, $content);
+        $eventData = $this->tbmRepo->addMessageToConversation($conv, $senderId, $content);
+
+        $this->dispatcher->fire('message.sent',[$eventData]);
+        return  $eventData;
     }
 
 

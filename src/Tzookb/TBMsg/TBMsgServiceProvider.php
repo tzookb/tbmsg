@@ -44,7 +44,7 @@ class TBMsgServiceProvider extends ServiceProvider {
         $this->app['tbmsg'] = $this->app->share(function($app) {
             return new TBMsg(
                 $app['Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository'],
-                $app['events'] //Illuminate\Events\Dispatcher
+                $app['Illuminate\Events\Dispatcher'] //Illuminate\Events\Dispatcher
             );
         });
 	}
