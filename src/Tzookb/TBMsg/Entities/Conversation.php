@@ -79,6 +79,9 @@ class Conversation {
         return $this->messages->first();
     }
 
+    /**
+     * @return Message
+     */
     function getLastMessage()
     {
         return $this->messages->last();

@@ -121,10 +121,10 @@ class EloquentTBMsgRepository implements iTBMsgRepository
     public function markMessageAs($msgId, $userId, $status) {
         $this->db->statement(
             '
-            UPDATE '.$this->tablePrefix.'messages_status mst
-            SET mst.status=?
-            WHERE mst.user_id=?
-            AND mst.msg_id=?
+            UPDATE '.$this->tablePrefix.'messages_status
+            SET status=?
+            WHERE user_id=?
+            AND msg_id=?
             ',
             [$status, $userId, $msgId]
         );
@@ -190,22 +190,26 @@ class EloquentTBMsgRepository implements iTBMsgRepository
         return (isset($results[0]))? $results[0]->numOfUnread : 0;
     }
 
-    public function markReadAllMessagesInConversation($conv_id, $user_id) {
+    public function markReadAllMessagesInConversation($conv_id, $user_id)
+    {
+
         $this->db->statement(
             '
-            UPDATE '.$this->tablePrefix.'messages_status mst
-            SET mst.status=?
-            WHERE mst.user_id=?
-            AND mst.status=?
-            AND mst.msg_id IN (
-              SELECT msg.id
-              FROM messages msg
-              WHERE msg.conv_id=?
-              AND msg.sender_id!=?
-            )
-            ',
+        UPDATE ' . $this->tablePrefix . 'messages_status
+        SET status=?
+        WHERE user_id=?
+        AND status=?
+        AND msg_id IN (
+          SELECT id
+          FROM messages
+          WHERE conv_id=?
+          AND sender_id!=?
+        )
+        ',
             [self::READ, $user_id, self::UNREAD, $conv_id, $user_id]
         );
+
+
     }
 
     public function deleteConversation($conv_id, $user_id) {

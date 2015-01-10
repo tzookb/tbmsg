@@ -1,8 +1,93 @@
 <?php
 
 
+use Tzookb\TBMsg\Entities\Message;
+use Tzookb\TBMsg\TBMsg;
 
 class SimpleTest extends TestCaseDb  {
+
+	/**
+	 * @test
+	 */
+	public function mark_message_as_read_and_unread() {
+		$user1 = 4;
+		$user2 = 9;
+		$content = 'default content';
+
+		$data = $this->tbmsg->createConversation([$user1, $user2]);
+		$createdConvId = $data->id;
+
+		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $content);
+
+		$conv = $this->tbmsg->getConversationMessages($createdConvId, $user2);
+		$message = $conv->getLastMessage();
+		$this->assertEquals(TBMsg::UNREAD, $message->getStatus());
+
+		$this->tbmsg->markMessageAsRead($message->getId(), $user2);
+
+		$conv = $this->tbmsg->getConversationMessages($createdConvId, $user2);
+		$message = $conv->getLastMessage();
+		$this->assertEquals(TBMsg::READ, $message->getStatus());
+
+		$this->tbmsg->markMessageAsUnread($message->getId(), $user2);
+
+		$conv = $this->tbmsg->getConversationMessages($createdConvId, $user2);
+		$message = $conv->getLastMessage();
+		$this->assertEquals(TBMsg::UNREAD, $message->getStatus());
+	}
+
+	/**
+	 * @test
+	 */
+	public function mark_unread_messages_as_read() {
+		$user1 = 4;
+		$user2 = 9;
+		$content = 'default content';
+
+		$data = $this->tbmsg->createConversation([$user1, $user2]);
+		$createdConvId = $data->id;
+
+		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $content);
+		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $content);
+		$this->assertEquals(2, $this->tbmsg->getNumOfUnreadMsgs($user2));
+
+		$this->tbmsg->markReadAllMessagesInConversation($createdConvId, $user2);
+		$this->assertEquals(0, $this->tbmsg->getNumOfUnreadMsgs($user2));
+	}
+
+	/**
+	 * @test
+	 */
+	public function get_number_of_unread_messages() {
+		$user1 = 4;
+		$user2 = 9;
+		$content = 'default content';
+
+		$data = $this->tbmsg->createConversation([$user1, $user2]);
+		$createdConvId = $data->id;
+
+		$this->assertEquals(0, $this->tbmsg->getNumOfUnreadMsgs($user2));
+
+		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $content);
+		$this->assertEquals(1, $this->tbmsg->getNumOfUnreadMsgs($user2));
+
+		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $content);
+		$this->assertEquals(2, $this->tbmsg->getNumOfUnreadMsgs($user2));
+	}
+
+	/**
+	 * @test
+	 */
+	public function send_message_between_two_users() {
+		$user1 = 4;
+		$user2 = 9;
+		$content = 'default content';
+
+		$this->tbmsg->sendMessageBetweenTwoUsers($user1, $user2, $content);
+
+		$data = $this->tbmsg->getConversationByTwoUsers($user1, $user2);
+		$this->assertEquals(1, $data);
+	}
 
 	/**
 	 * @test
@@ -69,12 +154,24 @@ class SimpleTest extends TestCaseDb  {
 	public function add_message_to_conversation() {
 		$user1 = 1;
 		$user2 = 2;
+		$msgContent = 'not relevant content';
+
 		$data = $this->tbmsg->createConversation([$user1, $user2]);
 		$createdConvId = $data->id;
 
-		$data = $this->tbmsg->addMessageToConversation($createdConvId, $user1, 'message content');
+		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $msgContent);
 
-		//TODO
+		$conv = $this->tbmsg->getConversationMessages($createdConvId, $user2);
+
+		$this->assertEquals(1, $conv->getNumOfMessages());
+
+		/** @var Message $msg */
+		$msg = $conv->getLastMessage();
+
+		$this->assertEquals($msgContent, $msg->getContent());
+		$this->assertEquals($user1, $msg->getSender());
+		$this->assertEquals(0, $msg->getSelf());
+		$this->assertEquals(TBMsg::UNREAD, $msg->getStatus());
 	}
 
 	/**
