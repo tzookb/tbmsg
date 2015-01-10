@@ -116,14 +116,6 @@ class Conversation {
         return $this->created;
     }
 
-
-    /**
-     * @param mixed $type
-     */
-    public function setType($type) {
-        $this->type = $type;
-    }
-
     /**
      * @return mixed
      */
