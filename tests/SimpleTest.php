@@ -129,6 +129,47 @@ class SimpleTest extends TestCaseDb  {
 	/**
 	 * @test
 	 */
+	public function check_user_is_in_conversation() {
+		$user1 = 4;
+		$user2 = 9;
+
+		$data = $this->tbmsg->createConversation([$user1, $user2]);
+		$createdConvId = $data['convId'];
+
+
+
+		$this->assertTrue(
+			$this->tbmsg->isUserInConversation($createdConvId, $user1)
+		);
+
+		$this->assertTrue(
+			$this->tbmsg->isUserInConversation($createdConvId, $user2)
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function check_user_is_not_in_conversation() {
+		$user1 = 4;
+		$user2 = 9;
+		$user3 = 11;
+
+		$data = $this->tbmsg->createConversation([$user1, $user2]);
+		$createdConvId = $data['convId'];
+
+
+
+		$this->assertFalse(
+			$this->tbmsg->isUserInConversation($createdConvId, $user3)
+		);
+
+
+	}
+
+	/**
+	 * @test
+	 */
 	public function get_conversation_users() {
 		$user1 = 4;
 		$user2 = 9;

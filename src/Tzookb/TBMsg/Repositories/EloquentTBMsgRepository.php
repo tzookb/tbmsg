@@ -44,14 +44,7 @@ class EloquentTBMsgRepository implements iTBMsgRepository
 
             //get the id of conv, and add foreach user a line in conv_users
             foreach ( $users_ids as $user_id ) {
-                $conv_user = new ConversationUsers();
-                $conv_user->conv_id = $conv->id;
-                $conv_user->user_id = $user_id;
-                try{
-                    $conv_user->save();
-                } catch ( \Exception $ex ) {
-
-                }
+                $this->addConvUserRow($conv->id, $user_id);
             }
             $eventData = [
                 'usersIds' => $users_ids,
@@ -60,6 +53,12 @@ class EloquentTBMsgRepository implements iTBMsgRepository
             return $eventData;
         } else
             throw new NotEnoughUsersInConvException;
+    }
+
+    protected function addConvUserRow($conv_id, $user_id) {
+        $this->db->table($this->tablePrefix.'conv_users')->insert(
+            array('conv_id' => $conv_id, 'user_id' => $user_id)
+        );
     }
 
     public function addMessageToConversation($conv_id, $user_id, $content) {
@@ -144,18 +143,14 @@ class EloquentTBMsgRepository implements iTBMsgRepository
     }
 
     public function isUserInConversation($conv_id, $user_id) {
-        $results = $this->db->select(
-            '
-            SELECT COUNT(cu.conv_id)
-            FROM '.$this->tablePrefix.'conv_users cu
-            WHERE cu.user_id=?
-            AND cu.conv_id=?
-            GROUP BY cu.user_id, cu.conv_id
-            HAVING COUNT(cu.conv_id)>0
-            ',
-            [$user_id, $conv_id]
-        );
-        if ( empty($results) )
+        $res = $this->db
+            ->table($this->tablePrefix.'conv_users')
+            ->select('conv_id', 'user_id')
+            ->where('user_id', $user_id)
+            ->where('conv_id', $conv_id)
+            ->first();
+
+        if(is_null($res))
             return false;
         return true;
     }
