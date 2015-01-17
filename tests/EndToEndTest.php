@@ -4,7 +4,7 @@
 use Tzookb\TBMsg\Entities\Message;
 use Tzookb\TBMsg\TBMsg;
 
-class SimpleTest extends TestCaseDb  {
+class EndToEndTest extends TestCaseDb  {
 
 	/**
 	 * @test
@@ -272,4 +272,11 @@ class SimpleTest extends TestCaseDb  {
 		$data = $this->tbmsg->createConversation([1]);
 	}
 
+	public function todo() {
+		//TODO add tests for those methods:
+		//getUserConversations
+		//markUnreadAllMessagesInConversation
+		//deleteConversation
+		//getUsersInConversation
+	}
 }
