@@ -248,7 +248,7 @@ class EloquentTBMsgRepository implements iTBMsgRepository
     {
         return $this->db->select(
             '
-            SELECT msg.conv_id as conv_id, msg.created_at, msg.id "msgId", msg.content, mst.status, mst.self, us.'.$this->usersTableKey.' userId
+            SELECT msg.conv_id as conv_id, msg.created_at, msg.id "msgId", msg.content, mst.status, mst.self, us.'.$this->usersTableKey.' "userId"
             FROM '.$this->tablePrefix.'messages msg
             INNER JOIN (
                 SELECT MAX(created_at) created_at
