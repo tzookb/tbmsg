@@ -175,7 +175,7 @@ class EloquentTBMsgRepository implements iTBMsgRepository
     public function getNumOfUnreadMsgs($user_id) {
         $results = $this->db->select(
             '
-            SELECT COUNT(mst.id) as "numOfUnread"
+            SELECT COUNT(mst.id) as `numOfUnread`
             FROM '.$this->tablePrefix.'messages_status mst
             WHERE mst.user_id=?
             AND mst.status=?
@@ -232,7 +232,7 @@ class EloquentTBMsgRepository implements iTBMsgRepository
 
         return $this->db->select(
             '
-            SELECT msg.id as "msgId", msg.content, mst.status, msg.created_at, msg.sender_id as "userId"
+            SELECT msg.id as `msgId`, msg.content, mst.status, msg.created_at, msg.sender_id as `userId`
             FROM '.$this->tablePrefix.'messages_status mst
             INNER JOIN '.$this->tablePrefix.'messages msg
             ON mst.msg_id=msg.id
@@ -248,7 +248,7 @@ class EloquentTBMsgRepository implements iTBMsgRepository
     {
         return $this->db->select(
             '
-            SELECT msg.conv_id as conv_id, msg.created_at, msg.id "msgId", msg.content, mst.status, mst.self, us.'.$this->usersTableKey.' userId
+            SELECT msg.conv_id as conv_id, msg.created_at, msg.id `msgId`, msg.content, mst.status, mst.self, us.'.$this->usersTableKey.' `userId`
             FROM '.$this->tablePrefix.'messages msg
             INNER JOIN (
                 SELECT MAX(created_at) created_at
