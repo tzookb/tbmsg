@@ -115,12 +115,12 @@ class TBMsg {
             $conversation->setId( $conv->conv_id );
 
             $message = new Message();
-            $message->setId( $conv->msgId );
+            $message->setId( $conv->msg_id );
             $message->setCreated( $conv->created_at );
             $message->setContent( $conv->content );
             $message->setStatus( $conv->status );
             $message->setSelf( $conv->self );
-            $message->setSender( $conv->userId );
+            $message->setSender( $conv->user_id );
             $conversation->addMessage($message);
             $conversations[ $conversation->getId() ] = $conversation;
         }
@@ -162,10 +162,10 @@ class TBMsg {
         foreach ( $results as $row )
         {
             $msg = new Message();
-            $msg->setId( $row->msgId );
+            $msg->setId( $row->msg_id );
             $msg->setContent( $row->content );
             $msg->setCreated( $row->created_at );
-            $msg->setSender( $row->userId );
+            $msg->setSender( $row->user_id );
             $msg->setStatus($row->status);
             $conversation->addMessage( $msg );
         }
