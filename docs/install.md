@@ -9,5 +9,4 @@ Installation:
 6. publish the package migrations:  "php artisan migrate:publish tzookb/tbmsg"
 7. now you can add prefix to the created tables, go to your migrations folder and find the package migrations:
 create_conv_users.php, create_conversations.php, create_messages.php, create_messages_status.php
-and not add prefix to table name, and of course set the prefix in the package config
-
+and not add prefix to table name, and of course set the prefix in the package config or just type "php artisan migrate --package=tzookb/tbmsg"
