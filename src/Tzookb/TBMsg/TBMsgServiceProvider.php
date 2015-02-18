@@ -13,15 +13,16 @@ class TBMsgServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = false;
 
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		$this->package('tzookb/tbmsg');
-	}
+    public function boot() {
+        $this->publishes([
+            __DIR__.'/../../config/tbmsg.php' => config_path('tbmsg.php'),
+        ], 'config');
+
+        // Publish your migrations
+        $this->publishes([
+            __DIR__.'/../../migrations/' => base_path('/database/migrations')
+        ], 'migrations');
+    }
 
 	/**
 	 * Register the service provider.
@@ -30,10 +31,12 @@ class TBMsgServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-        $usersTable = \Config::get('tbmsg::config.usersTable', 'users');
-        $usersTableKey = \Config::get('tbmsg::config.usersTableKey', 'id');
-        $tablePrefix = \Config::get('tbmsg::config.tablePrefix', '');
+        $usersTable = \Config::get('tbmsg.usersTable', 'users');
+        $usersTableKey = \Config::get('tbmsg.usersTableKey', 'id');
+        $tablePrefix = \Config::get('tbmsg.tablePrefix', '');
 
+
+        var_dump($usersTable);
         $this->app->bind('Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository',
             function($app) use($tablePrefix, $usersTable, $usersTableKey) {
 				$db = $app->make('Illuminate\Database\DatabaseManager');
@@ -44,7 +47,7 @@ class TBMsgServiceProvider extends ServiceProvider {
         $this->app['tbmsg'] = $this->app->share(function($app) {
             return new TBMsg(
                 $app['Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository'],
-                $app['Illuminate\Events\Dispatcher'] //Illuminate\Events\Dispatcher
+                $app['Illuminate\Contracts\Events\Dispatcher'] //Illuminate\Events\Dispatcher
             );
         });
 	}
