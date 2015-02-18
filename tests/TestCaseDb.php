@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Capsule\Manager;
 
+require __DIR__.'/TestDispatcher.php';
 
 class TestCaseDb extends \PHPUnit_Framework_TestCase {
 
@@ -82,7 +83,7 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 	public function initTbmsg() {
         $this->tbmsg = new \Tzookb\TBMsg\TBMsg(
             new \Tzookb\TBMsg\Repositories\EloquentTBMsgRepository('', 'users', 'id', $this->db),
-            new \Illuminate\Events\Dispatcher());
+            new TestDispatcher());
 	}
 
 	protected function initMuffing() {

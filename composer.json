@@ -14,13 +14,13 @@
     ],
     "require": {
         "php": ">=5.3",
-        "illuminate/events": "*",
-        "illuminate/database": "4.*"
+        "illuminate/contracts": "5.*",
+        "illuminate/database": "5.*"
     },
     "require-dev": {
         "mockery/mockery": "dev-master",
         "phpunit/phpunit": "4.3.*",
-        "illuminate/filesystem": "4.*",
+        "illuminate/filesystem": "5.*",
         "league/factory-muffin": "~2.0"
     },
     "require-all": true,

@@ -82,7 +82,7 @@ class EndToEndTest extends TestCaseDb  {
 		$user1 = 4;
 		$user2 = 9;
 		$content = 'default content';
-		$dispatcher = \Mockery::mock('Illuminate\Events\Dispatcher');
+		$dispatcher = \Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
 
 		$arr = [
 			'senderId' => $user1,
@@ -211,7 +211,7 @@ class EndToEndTest extends TestCaseDb  {
 		$user2 = 2;
 		$msgContent = 'not relevant content';
 
-		$dispatcher = \Mockery::mock('Illuminate\Events\Dispatcher');
+		$dispatcher = \Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
 
 		$arr = [
 			'usersIds' => [$user1, $user2],

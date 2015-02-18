@@ -4,7 +4,7 @@ namespace Tzookb\TBMsg;
 
 use DB;
 use Config;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Collection;
 use Tzookb\TBMsg\Exceptions\ConversationNotFoundException;
 use Tzookb\TBMsg\Exceptions\NotEnoughUsersInConvException;
