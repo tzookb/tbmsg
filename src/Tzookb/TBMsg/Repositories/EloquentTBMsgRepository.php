@@ -36,10 +36,11 @@ class EloquentTBMsgRepository implements iTBMsgRepository
         $this->db = $db;
     }
 
-    public function createConversation( $users_ids ) {
+    public function createConversation($users_ids, $title) {
         if ( count($users_ids ) > 1 ) {
             //create new conv
             $conv = new ConversationEloquent();
+            $conv->title = $title;
             $conv->save();
 
             //get the id of conv, and add foreach user a line in conv_users
@@ -47,6 +48,7 @@ class EloquentTBMsgRepository implements iTBMsgRepository
                 $this->addConvUserRow($conv->id, $user_id);
             }
             $eventData = [
+                'title' => $title,
                 'usersIds' => $users_ids,
                 'convId' => $conv->id
             ];

@@ -216,8 +216,8 @@ class TBMsg {
      * @throws Exceptions\NotEnoughUsersInConvException
      * @return ConversationEloquent
      */
-    public function createConversation( $users_ids ) {
-        $eventData = $this->tbmRepo->createConversation($users_ids);
+    public function createConversation( $users_ids, $title='' ) {
+        $eventData = $this->tbmRepo->createConversation($users_ids, $title);
         $this->dispatcher->fire('conversation.created',[$eventData]);
         return $eventData;
     }
@@ -231,14 +231,14 @@ class TBMsg {
      * send message to specific user from specific user, and return the new message data
      * if conversation is not existing yet between users it will create it
      */
-    public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content)
+    public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content, $title='')
     {
         //get conversation by two users
         try {
             $conv = $this->tbmRepo->getConversationByTwoUsers($senderId, $receiverId);
         } catch (ConversationNotFoundException $ex) {
             //if conversation doesnt exist, create it
-            $conv = $this->tbmRepo->createConversation([$senderId, $receiverId]);
+            $conv = $this->tbmRepo->createConversation([$senderId, $receiverId], $title);
             $conv = $conv['convId'];
         }
 

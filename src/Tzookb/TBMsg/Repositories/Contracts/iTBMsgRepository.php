@@ -16,7 +16,7 @@ interface iTBMsgRepository {
     const READ = 2;
     const ARCHIVED = 3;
 
-    public function createConversation( $users_ids );
+    public function createConversation($users_ids, $title);
     public function addMessageToConversation($conv_id, $user_id, $content);
     public function getConversationByTwoUsers($userA_id, $userB_id);
     public function isUserInConversation($conv_id, $user_id);

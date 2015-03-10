@@ -51,6 +51,7 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 		Manager::schema()->create('conversations', function($table)
 		{
 			$table->increments('id');
+			$table->string('title', 100);
 
 			$table->softDeletes();
 			$table->timestamps();

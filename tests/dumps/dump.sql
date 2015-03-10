@@ -12,6 +12,7 @@ CREATE TABLE `conv_users` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `conversations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) COLLATE utf8_unicode_ci,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',

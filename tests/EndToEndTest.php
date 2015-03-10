@@ -81,6 +81,7 @@ class EndToEndTest extends TestCaseDb  {
 	public function send_message_between_two_users() {
 		$user1 = 4;
 		$user2 = 9;
+		$convTitle = 'test title';
 		$content = 'default content';
 		$dispatcher = \Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
 
@@ -97,7 +98,7 @@ class EndToEndTest extends TestCaseDb  {
 			new \Tzookb\TBMsg\Repositories\EloquentTBMsgRepository('', 'users', 'id', $this->db),
 			$dispatcher);
 
-		$this->tbmsg->sendMessageBetweenTwoUsers($user1, $user2, $content);
+		$data = $this->tbmsg->sendMessageBetweenTwoUsers($user1, $user2, $content);
 
 		$data = $this->tbmsg->getConversationByTwoUsers($user1, $user2);
 		$this->assertEquals(1, $data);
@@ -132,11 +133,10 @@ class EndToEndTest extends TestCaseDb  {
 	public function check_user_is_in_conversation() {
 		$user1 = 4;
 		$user2 = 9;
+		$title = 'test title';
 
-		$data = $this->tbmsg->createConversation([$user1, $user2]);
+		$data = $this->tbmsg->createConversation([$user1, $user2], $title);
 		$createdConvId = $data['convId'];
-
-
 
 		$this->assertTrue(
 			$this->tbmsg->isUserInConversation($createdConvId, $user1)
@@ -204,26 +204,30 @@ class EndToEndTest extends TestCaseDb  {
 	}
 
 	/**
+	 * @group failing
 	 * @test
 	 */
 	public function add_message_to_conversation() {
 		$user1 = 1;
 		$user2 = 2;
 		$msgContent = 'not relevant content';
+		$title = 'test title';
 
 		$dispatcher = \Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
 
 		$arr = [
+			'title' => $title,
 			'usersIds' => [$user1, $user2],
-			'convId' => 1,
+			'convId' => 1
 		];
+
 		$dispatcher->shouldReceive('fire')->with('conversation.created', [$arr]);
 
 		$arr = [
 			'senderId' => $user1,
 			'convUsersIds' => [$user1, $user2],
 			'content' => $msgContent,
-			'convId' => 1,
+			'convId' => 1
 		];
 		$dispatcher->shouldReceive('fire')->with('message.sent', [$arr]);
 
@@ -233,7 +237,7 @@ class EndToEndTest extends TestCaseDb  {
 			new \Tzookb\TBMsg\Repositories\EloquentTBMsgRepository('', 'users', 'id', $this->db),
 			$dispatcher);
 
-		$data = $this->tbmsg->createConversation([$user1, $user2]);
+		$data = $this->tbmsg->createConversation([$user1, $user2], $title);
 		$createdConvId = $data['convId'];
 
 		$this->tbmsg->addMessageToConversation($createdConvId, $user1, $msgContent);

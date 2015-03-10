@@ -14,6 +14,7 @@ class CreateConversations extends Migration {
         Schema::create('conversations', function($table)
         {
             $table->increments('id');
+            $table->string('title', 100);
 
             $table->softDeletes();
             $table->timestamps();
