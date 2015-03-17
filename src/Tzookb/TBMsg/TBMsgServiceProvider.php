@@ -35,8 +35,6 @@ class TBMsgServiceProvider extends ServiceProvider {
         $usersTableKey = \Config::get('tbmsg.usersTableKey', 'id');
         $tablePrefix = \Config::get('tbmsg.tablePrefix', '');
 
-
-        var_dump($usersTable);
         $this->app->bind('Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository',
             function($app) use($tablePrefix, $usersTable, $usersTableKey) {
 				$db = $app->make('Illuminate\Database\DatabaseManager');
