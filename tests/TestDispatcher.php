@@ -80,4 +80,37 @@ class TestDispatcher implements \Illuminate\Contracts\Events\Dispatcher {
     }
 
 
+    /**
+     * Register an event and payload to be fired later.
+     *
+     * @param  string $event
+     * @param  array $payload
+     * @return void
+     */
+    public function push($event, $payload = [])
+    {
+        // TODO: Implement push() method.
+    }
+
+    /**
+     * Register an event subscriber with the dispatcher.
+     *
+     * @param  object|string $subscriber
+     * @return void
+     */
+    public function subscribe($subscriber)
+    {
+        // TODO: Implement subscribe() method.
+    }
+
+    /**
+     * Flush a set of pushed events.
+     *
+     * @param  string $event
+     * @return void
+     */
+    public function flush($event)
+    {
+        // TODO: Implement flush() method.
+    }
 }
