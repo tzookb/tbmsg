@@ -3,8 +3,12 @@
  * This awesome class written by: tzookb
  * Date: 11/02/15
  */
+namespace Tests;
 
-class TestDispatcher implements \Illuminate\Contracts\Events\Dispatcher {
+
+use Illuminate\Contracts\Events\Dispatcher;
+
+class TestDispatcher implements Dispatcher {
 
     /**
      * Register an event listener with the dispatcher.

@@ -1,8 +1,9 @@
 <?php
 
+namespace Tests;
+
 use Illuminate\Database\Capsule\Manager;
 
-require __DIR__.'/TestDispatcher.php';
 
 class TestCaseDb extends \PHPUnit_Framework_TestCase {
 
@@ -13,9 +14,8 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 	public function setUp() {
 		parent::setUp(); // Don't forget this!
 
-		League\FactoryMuffin\Facade::getFaker()->unique($reset = true);
+		\League\FactoryMuffin\Facade::getFaker()->unique($reset = true);
 		$this->initDb();
-		$this->initTbmsg();
 	}
 
 	protected function initDb() {
@@ -25,9 +25,9 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 			'driver'    => 'sqlite',
 			'database'  => ':memory:',
 			'prefix'    => '',
-			'fetch'		=> PDO::FETCH_CLASS
+			'fetch'		=> \PDO::FETCH_CLASS
 		]);
-		$capsule->getConnection()->setFetchMode(PDO::FETCH_CLASS);
+		$capsule->getConnection()->setFetchMode(\PDO::FETCH_CLASS);
 
 		$capsule->setAsGlobal();
 		$capsule->bootEloquent();
@@ -80,26 +80,20 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 		});
 	}
 
-	public function initTbmsg() {
-        $this->tbmsg = new \Tzookb\TBMsg\TBMsg(
-            new \Tzookb\TBMsg\Repositories\EloquentTBMsgRepository('', 'users', 'id', $this->db),
-            new TestDispatcher());
-	}
-
 	protected function initMuffing() {
-		League\FactoryMuffin\Facade::define('Tzookb\TBMsg\Models\Eloquent\Conversation', array(
+		\League\FactoryMuffin\Facade::define('Tzookb\TBMsg\Models\Eloquent\Conversation', array(
 			//'id' => 'int',
 			'deleted_at' => 'dateTime',
 			'created_at' => 'dateTime',
 			'updated_at' => 'dateTime',
 		));
 
-		League\FactoryMuffin\Facade::define('Tzookb\TBMsg\Models\Eloquent\ConversationUsers', array(
+		\League\FactoryMuffin\Facade::define('Tzookb\TBMsg\Models\Eloquent\ConversationUsers', array(
 			'conv_id' => 'factory|Tzookb\TBMsg\Models\Eloquent\Conversation',
 			'user_id' => 'int'
 		));
 
-		League\FactoryMuffin\Facade::define('Tzookb\TBMsg\Models\Eloquent\Message', array(
+		\League\FactoryMuffin\Facade::define('Tzookb\TBMsg\Models\Eloquent\Message', array(
 			'sender_id' => 'int',
 			'conv_id' => 'factory|Tzookb\TBMsg\Models\Eloquent\Conversation',
 			'content' => 'int',
@@ -108,7 +102,7 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 		));
 
 
-		League\FactoryMuffin\Facade::define('Tzookb\TBMsg\Models\Eloquent\MessageStatus', array(
+		\League\FactoryMuffin\Facade::define('Tzookb\TBMsg\Models\Eloquent\MessageStatus', array(
 			'user_id' => 'int',
 			'msg_id' => 'factory|Tzookb\TBMsg\Models\Eloquent\Message',
 			'self' => 'int',

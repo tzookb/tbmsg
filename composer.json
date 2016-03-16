@@ -1,38 +1,46 @@
 {
-    "name": "tzookb/tbmsg",
-    "type": "library",
-    "description": "users messaging system",
-    "keywords": ["laravel", "php", "messaging", "message-system"],
-    "homepage": "https://github.com/tzookb/tbmsg",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "tzookb",
-            "email": "tzookb@gmail.com",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php": ">=5.3",
-        "illuminate/contracts": "5.*",
-        "illuminate/database": "5.*"
+  "name": "tzookb/tbmsg",
+  "type": "library",
+  "description": "users messaging system",
+  "keywords": [
+    "laravel",
+    "php",
+    "messaging",
+    "message-system"
+  ],
+  "homepage": "https://github.com/tzookb/tbmsg",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "tzookb",
+      "email": "tzookb@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.3",
+    "illuminate/contracts": "5.*",
+    "illuminate/database": "5.*",
+    "nesbot/carbon": "~1.14"
+  },
+  "require-dev": {
+    "mockery/mockery": "dev-master",
+    "phpunit/phpunit": "4.3.*",
+    "illuminate/filesystem": "5.*",
+    "league/factory-muffin": "~2.0"
+  },
+  "require-all": true,
+  "autoload": {
+    "psr-0": {
+      "Tzookb\\TBMsg": "src/",
+      "Tests\\": "Tests/"
     },
-    "require-dev": {
-        "mockery/mockery": "dev-master",
-        "phpunit/phpunit": "4.3.*",
-        "illuminate/filesystem": "5.*",
-        "league/factory-muffin": "~2.0"
+    "psr-4": {
+      "Tests\\": "Tests/"
     },
-    "require-all": true,
-
-    "autoload": {    
-        "psr-0": {
-            "Tzookb\\TBMsg": "src/"
-        },
-        "classmap": [
-            "tests/TestCaseDb.php",
-            "src/migrations/"
-        ]
-    },    
-    "minimum-stability": "dev"    
+    "classmap": [
+      "src/migrations/"
+    ]
+  },
+  "minimum-stability": "dev"
 }
