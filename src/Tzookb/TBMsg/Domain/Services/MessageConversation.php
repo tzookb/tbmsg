@@ -58,17 +58,27 @@ class MessageConversation
             //save message
             $newMessageId = $this->_conversationRepository->addMessage($conversationId, $message);
 
+
             //save messages statuses per user
             //TODO refactor to one query
             foreach ($participants as $participant) {
+                if ($participant == $messageDTO->senderId) {
+                    $status = MessageStatus::READ;
+                    $selfMsg = true;
+                } else {
+                    $status = MessageStatus::UNREAD;
+                    $selfMsg = false;
+                }
+
                 $this->messageStatusRepository->create(
-                    //TODO: fix status, and id
-                    new MessageStatus(0, $participant, 'unread')
+                    $newMessageId,
+                    new MessageStatus($participant, $status)
                 );
             }
 
             $this->_conversationRepository->commit();
         } catch (\Exception $ex) {
+            throw $ex;
             $this->_conversationRepository->rollBack();
             return false;
         }

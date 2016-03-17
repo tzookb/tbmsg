@@ -68,7 +68,7 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 			$table->index('conv_id');
 		});
 
-		Manager::schema()->create('messages_status', function($table)
+		Manager::schema()->create('message_statuses', function($table)
 		{
 			$table->increments('id');
 			$table->integer('user_id');

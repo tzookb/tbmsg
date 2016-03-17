@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class MessageStatus extends Model {
 
+    public $timestamps = false;
+
     public function message()
     {
         return $this->belongsTo('Tzookb\TBMsg\Persistence\Eloquent\Models\Message');

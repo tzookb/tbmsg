@@ -16,9 +16,10 @@ use Tzookb\TBMsg\Domain\Entities\MessageStatus;
 interface MessageStatusRepository extends BaseRepository
 {
     /**
+     * @param $msgId
      * @param MessageStatus $messageStatus
      * @return int
      */
-    public function create(MessageStatus $messageStatus);
+    public function create($msgId, MessageStatus $messageStatus);
 
 }

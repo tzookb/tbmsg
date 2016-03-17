@@ -23,10 +23,10 @@ class MessageStatusTest extends \PHPUnit_Framework_TestCase
         $msgStatusId = 5;
         $msgRelatesTo = 1;
         $msgStatus = 1;
-        $messageStatus = new MessageStatus($msgStatusId, $msgRelatesTo, $msgStatus);
+        $messageStatus = new MessageStatus($msgRelatesTo, $msgStatus, $msgStatusId);
 
         $this->assertEquals($msgStatusId, $messageStatus->getId());
-        $this->assertEquals($msgRelatesTo, $messageStatus->getRelatesTo());
+        $this->assertEquals($msgRelatesTo, $messageStatus->getUserId());
         $this->assertEquals($msgStatus, $messageStatus->getStatus());
     }
 }

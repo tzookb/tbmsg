@@ -20,13 +20,13 @@ class MessageTest extends \PHPUnit_Framework_TestCase
     public function check_basic_constructor()
     {
         $creatorId = 55;
-        $creator = new TestParticipant($creatorId);
+        $creator = $creatorId;
         $content = 'content here';
         $conv = new Message($creator, $content);
 
         $this->assertNull($conv->getId());
         $this->assertEquals($creator, $conv->getCreator());
-        $this->assertEquals($creatorId, $conv->getCreator()->getTbmsgIdentifyId());
+        $this->assertEquals($creatorId, $conv->getCreator());
         $this->assertEquals($content, $conv->getContent());
     }
 
@@ -34,7 +34,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
     public function check_constructor_with_created()
     {
         $lastWeek = Carbon::now()->subWeek();
-        $msg = new Message(new TestParticipant(55), 'dontcare', $lastWeek);
+        $msg = new Message(55, 'dontcare', $lastWeek);
         $this->assertEquals($lastWeek, $msg->getCreated());
     }
 

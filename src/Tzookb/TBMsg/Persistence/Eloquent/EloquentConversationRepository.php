@@ -27,8 +27,8 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
 
         $eloquentConversation->save();
 
-        $participants = array_map(function(TBMsgable $participant) {
-            return new ConversationUsers(['user_id'=>$participant->getTbmsgIdentifyId()]);
+        $participants = array_map(function($participant) {
+            return new ConversationUsers(['user_id'=>$participant]);
         }, $conversation->getParticipants());
 
 

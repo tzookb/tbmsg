@@ -11,14 +11,19 @@ namespace Tzookb\TBMsg\Domain\Entities;
 
 class MessageStatus
 {
+    const UNREAD = 0;
+    const READ = 1;
+    const ARCHIVED = 2;
+    const DELETE = 3;
+
     private $_id;
-    private $_relatesTo;
+    private $_userId;
     private $_status;
 
-    public function __construct($id, $relatesTo, $status)
+    public function __construct($userId, $status, $id = null)
     {
         $this->_id = $id;
-        $this->_relatesTo = $relatesTo;
+        $this->_userId = $userId;
         $this->_status = $status;
     }
 
@@ -33,9 +38,9 @@ class MessageStatus
     /**
      * @return mixed
      */
-    public function getRelatesTo()
+    public function getUserId()
     {
-        return $this->_relatesTo;
+        return $this->_userId;
     }
 
     /**

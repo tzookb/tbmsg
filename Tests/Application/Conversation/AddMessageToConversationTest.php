@@ -10,9 +10,7 @@ namespace Tests\Application\Conversation;
 
 
 use Tests\TestCaseDb;
-use Tests\Domain\Helpers\TestParticipant;
 use Tzookb\TBMsg\Application\Conversation\AddMessageToConversation;
-use Tzookb\TBMsg\Domain\Entities\Conversation;
 use Tzookb\TBMsg\Domain\Services\MessageConversation;
 
 

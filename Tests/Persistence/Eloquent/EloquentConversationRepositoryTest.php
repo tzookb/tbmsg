@@ -22,7 +22,7 @@ class EloquentConversationRepositoryTest extends TestCaseDb
     {
         $service = $this->getRepository();
 
-        $conversation = new Conversation([new TestParticipant(1)]);
+        $conversation = new Conversation([1]);
         $conversationId = $service->create($conversation);
 
         $participants = $service->allParticipants(1);
@@ -38,7 +38,7 @@ class EloquentConversationRepositoryTest extends TestCaseDb
     {
         $service = $this->getRepository();
 
-        $conversation = new Conversation([new TestParticipant(1), new TestParticipant(2)]);
+        $conversation = new Conversation([1, 2]);
         $conversationId = $service->create($conversation);
 
         $participants = $service->allParticipants(1);
@@ -53,13 +53,7 @@ class EloquentConversationRepositoryTest extends TestCaseDb
     {
         $service = $this->getRepository();
 
-        $conversation = new Conversation([
-            new TestParticipant(1),
-            new TestParticipant(2),
-            new TestParticipant(3),
-            new TestParticipant(4),
-            new TestParticipant(5)
-        ]);
+        $conversation = new Conversation([1,2,3,4,5]);
         $conversationId = $service->create($conversation);
 
         $participants = $service->allParticipants(1);

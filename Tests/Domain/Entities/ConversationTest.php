@@ -18,7 +18,7 @@ class ConversationTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function check_basic_constructor()
     {
-        $donCareParticipant = new TestParticipant(2);
+        $donCareParticipant = 2;
         $conv = new Conversation([$donCareParticipant], []);
         $this->assertEquals([], $conv->getMessages());
         $this->assertEquals([$donCareParticipant], $conv->getParticipants());
@@ -29,7 +29,7 @@ class ConversationTest extends \PHPUnit_Framework_TestCase
     public function check_constructor_with_created()
     {
         $lastWeek = Carbon::now()->subWeek();
-        $conv = new Conversation([new TestParticipant(2)], [], $lastWeek);
+        $conv = new Conversation([2], [], $lastWeek);
         $this->assertEquals($lastWeek, $conv->getCreated());
     }
 
@@ -37,15 +37,15 @@ class ConversationTest extends \PHPUnit_Framework_TestCase
     public function check_constructor_with_id()
     {
         $id = 55;
-        $conv = new Conversation([new TestParticipant(2)], [], null, $id);
+        $conv = new Conversation([2], [], null, $id);
         $this->assertEquals($id, $conv->getId());
     }
 
     /** @test */
     public function check_constructor_with_participants()
     {
-        $par1 = new TestParticipant(1);
-        $par2 = new TestParticipant(2);
+        $par1 = 1;
+        $par2 = 2;
 
         $conv = new Conversation([$par1, $par2], []);
 
