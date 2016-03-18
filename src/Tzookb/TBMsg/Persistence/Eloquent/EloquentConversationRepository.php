@@ -84,9 +84,17 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
     public function allByUserId($userId)
     {
         $eloquentConversationUsers = new \Tzookb\TBMsg\Persistence\Eloquent\Models\ConversationUsers();
-        $conversations = $eloquentConversationUsers->select('conv_id')->where(['user_id'=>$userId])->get();
+        $conversations = $eloquentConversationUsers
+                            ->select('conv_id')
+                            ->where([
+                                'user_id' => $userId,
+                                'active' => true
+                            ])->get();
 
-        return $conversations->toArray();
+        return $conversations->map(function($row) {
+            return (int)$row->conv_id;
+        });
+
     }
 
 

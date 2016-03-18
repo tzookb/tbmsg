@@ -11,17 +11,20 @@ namespace Tzookb\TBMsg\Application\Conversation;
 
 use Tzookb\TBMsg\Application\DTO\ParticipantsList;
 use Tzookb\TBMsg\Domain\Services\CreateConversation as DomainCreateConversation;
+use Tzookb\TBMsg\Domain\Services\GetConversations;
 
 class GetUserConversations
 {
-    /**
-     * @var DomainCreateConversation
-     */
-    private $domainCreateConversation;
 
-    public function __construct(DomainCreateConversation $domainCreateConversation)
+    /**
+     * @var GetConversations
+     */
+    private $getConversations;
+
+    public function __construct(GetConversations $getConversations)
     {
-        $this->domainCreateConversation = $domainCreateConversation;
+
+        $this->getConversations = $getConversations;
     }
 
     /**
@@ -30,6 +33,6 @@ class GetUserConversations
      */
     public function handle($userId)
     {
-        return $this->domainCreateConversation->handle($participantsList);
+        return $this->getConversations->handle($userId);
     }
 }

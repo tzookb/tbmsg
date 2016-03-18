@@ -11,6 +11,7 @@ namespace Tests\Domain\Services;
 use Tzookb\TBMsg\Application\DTO\MessageDTO;
 use Tzookb\TBMsg\Application\DTO\ParticipantsList;
 use Tzookb\TBMsg\Domain\Services\CreateConversation;
+use Tzookb\TBMsg\Domain\Services\GetConversations;
 use Tzookb\TBMsg\Domain\Services\MessageConversation;
 use Tests\TestCaseDb;
 use Tzookb\TBMsg\Persistence\Eloquent\EloquentConversationRepository;
@@ -23,39 +24,46 @@ class GetConversationsTest extends TestCaseDb
     /**
      * @test
      */
-    public function check_rows_created()
+    public function get_several_conversations()
     {
         $convRepo = new EloquentConversationRepository($this->db);
         $msgStatusRepo = new EloquentMessageStatusRepository($this->db);
 
         $user1 = 1;
         $user2 = 2;
+        $user3 = 3;
         $content = 'whatever';
 
-        $participantsList = new ParticipantsList([$user1, $user2]);
+        $participantsList1 = new ParticipantsList([$user1, $user2]);
+        $participantsList2 = new ParticipantsList([$user1, $user3]);
         $createConversation = new CreateConversation($convRepo);
-        $messageConversation = new MessageConversation($convRepo, $msgStatusRepo);
-
-        $convId = $createConversation->handle($participantsList);
-
-        $messageId = $messageConversation->handle(
-            new MessageDTO($user1, $content),
-            $convId
-        );
-
-        //TODO FIX GULY TEST
-        $res = MessageStatus::all()->toArray();
-
-        $this->assertEquals(1, $res[0]['id']);
-        $this->assertEquals($user1, $res[0]['user_id']);
-        $this->assertEquals($messageId, $res[0]['msg_id']);
-        $this->assertEquals(\Tzookb\TBMsg\Domain\Entities\MessageStatus::READ, $res[0]['status']);
-
-        $this->assertEquals(2, $res[1]['id']);
-        $this->assertEquals($user2, $res[1]['user_id']);
-        $this->assertEquals($messageId, $res[1]['msg_id']);
-        $this->assertEquals(\Tzookb\TBMsg\Domain\Entities\MessageStatus::UNREAD, $res[1]['status']);
+        $GetConversations = new GetConversations($convRepo);
 
 
+        $createConversation->handle($participantsList1);
+        $createConversation->handle($participantsList2);
+
+        $convs = $GetConversations->handle($user1);
+
+        $this->assertEquals(2, sizeof($convs));
+        $this->assertEquals(1, $convs[0]);
+        $this->assertEquals(2, $convs[1]);
     }
+
+    /**
+     * @test
+     */
+    public function no_conversations()
+    {
+        $convRepo = new EloquentConversationRepository($this->db);
+
+        $user1 = 1;
+
+        $GetConversations = new GetConversations($convRepo);
+
+        $convs = $GetConversations->handle($user1);
+
+        $this->assertEquals(0, sizeof($convs));
+    }
+
 }

@@ -44,6 +44,7 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 		{
 			$table->integer('conv_id')->nullable();
 			$table->integer('user_id')->nullable();
+			$table->boolean('active')->default(true);
 
 			$table->primary(array('conv_id', 'user_id'));
 		});

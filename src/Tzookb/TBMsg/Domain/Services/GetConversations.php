@@ -30,7 +30,6 @@ class GetConversations
 
     public function handle($userId)
     {
-        $res = $this->_conversationRepository->allByUserId($userId);
-        var_dump($res);
+        return $this->_conversationRepository->allByUserId($userId);
     }
 }
