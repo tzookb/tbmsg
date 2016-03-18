@@ -1,9 +1,9 @@
 - create conversations ([user,user,user])
 - add msg to conv (sender, conv, content)
-
 - get conversations (user)
 
-- get message of conversation (user, conv)
+- get messages of conversation (user, conv)
+
 - get count of unread msgs (user)
 - mark conv as read (user, conv)
 - delete conv (user, conv)

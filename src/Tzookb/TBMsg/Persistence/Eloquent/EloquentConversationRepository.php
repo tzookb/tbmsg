@@ -98,5 +98,20 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
     }
 
 
+    /**
+     * @param $userId
+     * @param $convId
+     * @return mixed
+     */
+    public function getMessagesOfConversationForUser($userId, $convId)
+    {
+        $eloquentMessage = new \Tzookb\TBMsg\Persistence\Eloquent\Models\Message();
 
+        $res = $eloquentMessage
+            ->where('messages.conv_id', $convId)
+            ->join('message_statuses', 'messages.id', '=', 'message_statuses.msg_id')
+            ->get();
+
+        return $res->toArray();
+    }
 }

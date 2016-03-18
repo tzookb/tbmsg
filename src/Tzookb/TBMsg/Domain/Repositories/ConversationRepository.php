@@ -43,4 +43,11 @@ interface ConversationRepository extends BaseRepository
      * @return integer[]
      */
     public function allByUserId($userId);
+
+    /**
+     * @param $userId
+     * @param $convId
+     * @return array
+     */
+    public function getMessagesOfConversationForUser($userId, $convId);
 }
