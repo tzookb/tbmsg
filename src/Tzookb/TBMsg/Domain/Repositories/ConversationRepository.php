@@ -37,4 +37,10 @@ interface ConversationRepository extends BaseRepository
      * @param $conversationId
      */
     public function findById($conversationId);
+
+    /**
+     * @param $userId
+     * @return integer[]
+     */
+    public function allByUserId($userId);
 }

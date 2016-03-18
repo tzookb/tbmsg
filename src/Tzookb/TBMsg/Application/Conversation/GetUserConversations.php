@@ -30,7 +30,6 @@ class GetUserConversations
      */
     public function handle($userId)
     {
-        $participantsList = new ParticipantsList($participants);
         return $this->domainCreateConversation->handle($participantsList);
     }
 }
