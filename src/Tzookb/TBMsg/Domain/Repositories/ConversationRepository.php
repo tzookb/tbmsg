@@ -50,4 +50,15 @@ interface ConversationRepository extends BaseRepository
      * @return array
      */
     public function getMessagesOfConversationForUser($userId, $convId);
+
+    /**
+     * update all conversation messages as read,
+     * for specific user in conversation.
+     * return amount of messages that were changed.
+     *
+     * @param $userId
+     * @param $convId
+     * @return integer
+     */
+    public function markConversationAsRead($userId, $convId);
 }

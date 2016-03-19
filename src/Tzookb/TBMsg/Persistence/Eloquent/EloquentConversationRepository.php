@@ -119,4 +119,24 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
 
         return $res->toArray();
     }
+
+    public function markConversationAsRead($userId, $convId)
+    {
+        $eloquentMessage = new \Tzookb\TBMsg\Persistence\Eloquent\Models\Message();
+        $eloquentMessageStatus = new \Tzookb\TBMsg\Persistence\Eloquent\Models\MessageStatus();
+
+        $messagesIdsInConv = $eloquentMessage
+            ->select('messages.id')
+            ->where('messages.conv_id', $convId)
+            ->get()->map(function($row) {
+                return $row->id;
+            });
+
+        $res = $eloquentMessageStatus
+            ->whereIn('msg_id', $messagesIdsInConv)
+            ->where('user_id', $userId)
+            ->update(['status' => Message::READ]);
+
+        return $res;
+    }
 }
