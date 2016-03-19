@@ -42,7 +42,10 @@ class GetMessages
         $results = $this->_conversationRepository->getMessagesOfConversationForUser($userId, $conversationId);
 
         foreach ($results as $result) {
-            $messages[] = new Message($result['sender_id'], $result['content'], $result['created_at'], $result['id']);
+            $messages[] = new Message(
+                $result['sender_id'], $result['content'], $result['created_at'],
+                $result['id'], $result['status'], $result['user_id']
+            );
         }
         return $messages;
     }

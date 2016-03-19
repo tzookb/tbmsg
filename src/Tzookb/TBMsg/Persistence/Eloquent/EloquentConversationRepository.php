@@ -107,7 +107,13 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
         $eloquentMessage = new \Tzookb\TBMsg\Persistence\Eloquent\Models\Message();
 
         $res = $eloquentMessage
+            ->select([
+                'messages.id', 'messages.sender_id', 'messages.content',
+                'messages.created_at', 'message_statuses.status',
+                'message_statuses.user_id'
+            ])
             ->where('messages.conv_id', $convId)
+            ->where('message_statuses.user_id', $userId)
             ->join('message_statuses', 'messages.id', '=', 'message_statuses.msg_id')
             ->get();
 
