@@ -17,6 +17,9 @@ use Tzookb\TBMsg\Domain\Services\MessageConversation;
 use Tests\TestCaseDb;
 use Tzookb\TBMsg\Persistence\Eloquent\EloquentConversationRepository;
 use Tzookb\TBMsg\Persistence\Eloquent\EloquentMessageStatusRepository;
+use Tzookb\TBMsg\Persistence\Eloquent\Models\Conversation;
+use Tzookb\TBMsg\Persistence\Eloquent\Models\ConversationUsers;
+use Tzookb\TBMsg\Persistence\Eloquent\Models\Message;
 use Tzookb\TBMsg\Persistence\Eloquent\Models\MessageStatus;
 
 class GetMessagesTest extends TestCaseDb
@@ -37,7 +40,6 @@ class GetMessagesTest extends TestCaseDb
         $participantsList = new ParticipantsList([$user1, $user2]);
 
         $createConversation = new CreateConversation($convRepo);
-        $GetConversations = new GetConversations($convRepo);
         $messageConversation = new MessageConversation($convRepo, $msgStatusRepo);
         $getMessages = new GetMessages($convRepo, $msgStatusRepo);
 
@@ -49,14 +51,14 @@ class GetMessagesTest extends TestCaseDb
             $convId
         );
 
+        //TODO finish test
 
         $res = $getMessages->handle($user1, $convId);
-        var_dump($res);
+        //var_dump($res);
 
         $this->assertEquals(1, $res[0]->getId());
         $this->assertEquals($content, $res[0]->getContent());
         $this->assertEquals($user1, $res[0]->getCreator());
-
 
 
 

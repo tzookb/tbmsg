@@ -16,7 +16,6 @@ class Conversation
 {
     private $_id;
 
-    /** @var TBMsgable[] */
     private $_participants;
 
     /** @var Message[] */
@@ -56,7 +55,7 @@ class Conversation
     }
 
     /**
-     * @param TBMsgable[] $participants
+     * @param array $participants
      * @throws NotEnoughParticipantsForConversationException
      */
     public function setParticipants($participants)

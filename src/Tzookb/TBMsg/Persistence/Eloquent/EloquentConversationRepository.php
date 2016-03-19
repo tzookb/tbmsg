@@ -11,7 +11,6 @@ namespace Tzookb\TBMsg\Persistence\Eloquent;
 
 use Tzookb\TBMsg\Domain\Entities\Conversation;
 use Tzookb\TBMsg\Domain\Entities\Message;
-use Tzookb\TBMsg\Domain\Entities\TBMsgable;
 use Tzookb\TBMsg\Domain\Repositories\ConversationRepository;
 use Tzookb\TBMsg\Persistence\Eloquent\Models\ConversationUsers;
 

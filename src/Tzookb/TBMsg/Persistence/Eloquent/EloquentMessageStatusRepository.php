@@ -9,24 +9,23 @@
 namespace Tzookb\TBMsg\Persistence\Eloquent;
 
 
-use Tzookb\TBMsg\Domain\Entities\MessageStatus;
+use Tzookb\TBMsg\Domain\Entities\Message;
 use Tzookb\TBMsg\Domain\Repositories\MessageStatusRepository;
 
 class EloquentMessageStatusRepository extends EloquentBaseRepository implements MessageStatusRepository
 {
 
     /**
-     * @param $msgId
-     * @param MessageStatus $messageStatus
+     * @param Message $message
      * @return int
      */
-    public function create($msgId, MessageStatus $messageStatus)
+    public function create(Message $message)
     {
         $eloquentMessageStatus = new \Tzookb\TBMsg\Persistence\Eloquent\Models\MessageStatus();
-        $eloquentMessageStatus->user_id = $messageStatus->getUserId();
-        $eloquentMessageStatus->msg_id = $msgId;
+        $eloquentMessageStatus->user_id = $message->getUserRelated();
+        $eloquentMessageStatus->msg_id = $message->getId();
         $eloquentMessageStatus->self = 0;
-        $eloquentMessageStatus->status = $messageStatus->getStatus();
+        $eloquentMessageStatus->status = $message->getStatus();
 
         $eloquentMessageStatus->save();
         return $eloquentMessageStatus->id;

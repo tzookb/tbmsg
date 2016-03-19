@@ -9,9 +9,7 @@
 namespace Tzookb\TBMsg\Domain\Services;
 
 
-use Tzookb\TBMsg\Application\DTO\MessageDTO;
 use Tzookb\TBMsg\Domain\Entities\Message;
-use Tzookb\TBMsg\Domain\Entities\MessageStatus;
 use Tzookb\TBMsg\Domain\Repositories\ConversationRepository;
 use Tzookb\TBMsg\Domain\Repositories\MessageStatusRepository;
 

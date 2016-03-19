@@ -11,7 +11,6 @@ namespace Tzookb\TBMsg\Domain\Services;
 
 use Tzookb\TBMsg\Application\DTO\MessageDTO;
 use Tzookb\TBMsg\Domain\Entities\Message;
-use Tzookb\TBMsg\Domain\Entities\MessageStatus;
 use Tzookb\TBMsg\Domain\Repositories\ConversationRepository;
 use Tzookb\TBMsg\Domain\Repositories\MessageStatusRepository;
 
@@ -40,8 +39,6 @@ class MessageConversation
 
     public function handle(MessageDTO $messageDTO, $conversationId)
     {
-        //create message
-        $message = new Message($messageDTO->senderId, $messageDTO->content);
 
         //fetch conversation
         //fail if not found
@@ -55,6 +52,8 @@ class MessageConversation
 
             $this->_conversationRepository->beginTransaction();
 
+            $message = new Message($messageDTO->senderId, $messageDTO->content);
+
             //save message
             $newMessageId = $this->_conversationRepository->addMessage($conversationId, $message);
 
@@ -63,16 +62,15 @@ class MessageConversation
             //TODO refactor to one query
             foreach ($participants as $participant) {
                 if ($participant == $messageDTO->senderId) {
-                    $status = MessageStatus::READ;
+                    $status = Message::READ;
                     $selfMsg = true;
                 } else {
-                    $status = MessageStatus::UNREAD;
+                    $status = Message::UNREAD;
                     $selfMsg = false;
                 }
 
                 $this->messageStatusRepository->create(
-                    $newMessageId,
-                    new MessageStatus($participant, $status)
+                    new Message($messageDTO->senderId, $messageDTO->content, null, $newMessageId, $status, $participant)
                 );
             }
 

@@ -9,17 +9,14 @@
 namespace Tzookb\TBMsg\Domain\Repositories;
 
 
-use Tzookb\TBMsg\Domain\Entities\Conversation;
 use Tzookb\TBMsg\Domain\Entities\Message;
-use Tzookb\TBMsg\Domain\Entities\MessageStatus;
 
 interface MessageStatusRepository extends BaseRepository
 {
     /**
-     * @param $msgId
-     * @param MessageStatus $messageStatus
+     * @param Message $message
      * @return int
      */
-    public function create($msgId, MessageStatus $messageStatus);
+    public function create(Message $message);
 
 }

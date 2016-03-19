@@ -49,12 +49,12 @@ class MessageConversationTest extends TestCaseDb
         $this->assertEquals(1, $res[0]['id']);
         $this->assertEquals($user1, $res[0]['user_id']);
         $this->assertEquals($messageId, $res[0]['msg_id']);
-        $this->assertEquals(\Tzookb\TBMsg\Domain\Entities\MessageStatus::READ, $res[0]['status']);
+        $this->assertEquals(\Tzookb\TBMsg\Domain\Entities\Message::READ, $res[0]['status']);
 
         $this->assertEquals(2, $res[1]['id']);
         $this->assertEquals($user2, $res[1]['user_id']);
         $this->assertEquals($messageId, $res[1]['msg_id']);
-        $this->assertEquals(\Tzookb\TBMsg\Domain\Entities\MessageStatus::UNREAD, $res[1]['status']);
+        $this->assertEquals(\Tzookb\TBMsg\Domain\Entities\Message::UNREAD, $res[1]['status']);
 
 
     }
