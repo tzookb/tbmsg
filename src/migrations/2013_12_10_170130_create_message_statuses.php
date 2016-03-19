@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMessagesStatus extends Migration {
+class CreateMessageStatuses extends Migration {
 
 	/**
 	 * Run the migrations.
