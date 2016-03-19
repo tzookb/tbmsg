@@ -19,4 +19,10 @@ interface MessageStatusRepository extends BaseRepository
      */
     public function create(Message $message);
 
+    /**
+     * @param $userId
+     * @return integer
+     */
+    public function numOfUnreadMessages($userId);
+
 }

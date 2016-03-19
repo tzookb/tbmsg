@@ -11,6 +11,7 @@ namespace Tzookb\TBMsg\Persistence\Eloquent;
 
 use Tzookb\TBMsg\Domain\Entities\Message;
 use Tzookb\TBMsg\Domain\Repositories\MessageStatusRepository;
+use Tzookb\TBMsg\Persistence\Eloquent\Models\MessageStatus;
 
 class EloquentMessageStatusRepository extends EloquentBaseRepository implements MessageStatusRepository
 {
@@ -29,5 +30,18 @@ class EloquentMessageStatusRepository extends EloquentBaseRepository implements 
 
         $eloquentMessageStatus->save();
         return $eloquentMessageStatus->id;
+    }
+
+    /**
+     * @param $userId
+     * @return integer
+     */
+    public function numOfUnreadMessages($userId)
+    {
+        $eloquentMessageStatus = new MessageStatus();
+        return $eloquentMessageStatus
+            ->where('user_id', $userId)
+            ->where('status', Message::UNREAD)
+            ->count();
     }
 }
