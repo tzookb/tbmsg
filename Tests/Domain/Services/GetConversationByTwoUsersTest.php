@@ -11,6 +11,7 @@ namespace Tests\Domain\Services;
 use Tzookb\TBMsg\Application\DTO\MessageDTO;
 use Tzookb\TBMsg\Application\DTO\ParticipantsList;
 use Tzookb\TBMsg\Domain\Entities\Message;
+use Tzookb\TBMsg\Domain\Exceptions\ConversationNotFoundException;
 use Tzookb\TBMsg\Domain\Services\CreateConversation;
 use Tzookb\TBMsg\Domain\Services\GetConversationByTwoUsers;
 use Tzookb\TBMsg\Domain\Services\GetMessages;
@@ -33,6 +34,7 @@ class GetConversationByTwoUsersTest extends TestCaseDb
         $user1 = 1;
         $user2 = 2;
         $user3 = 3;
+        $user4 = 4;
         $content = 'whatever';
 
 
@@ -41,12 +43,23 @@ class GetConversationByTwoUsersTest extends TestCaseDb
         $getMessages = new GetMessages($convRepo, $msgStatusRepo);
         $getConversationByTwoUsers = new GetConversationByTwoUsers($convRepo);
 
-
         $convIdWithUser2 = $createConversation->handle(new ParticipantsList([$user1, $user2]));
         $convIdWithUser3 = $createConversation->handle(new ParticipantsList([$user1, $user3]));
 
+        //check conv with user2
         $res = $getConversationByTwoUsers->handle($user1, $user2);
+        $this->assertEquals($convIdWithUser2, $res);
 
+        //check conv with user3
+        $res = $getConversationByTwoUsers->handle($user1, $user3);
+        $this->assertEquals($convIdWithUser3, $res);
+
+        //try to find conversation between useres with no conversation
+        try {
+            $getConversationByTwoUsers->handle($user1, $user4);
+        } catch (ConversationNotFoundException $ex) {
+            $this->assertEquals(ConversationNotFoundException::class, get_class($ex));
+        }
     }
 
 }

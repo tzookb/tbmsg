@@ -150,14 +150,12 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
             ->select('conv_id')
             ->whereIn('user_id', [$userIdA, $userIdB])
             ->groupBy('conv_id')
-            ->havingRaw('COUNT(conv_id) = 2000')
+            ->havingRaw('COUNT(conv_id) = 2')
             ->get();
 
-        var_dump($res);
-        if (empty($res))
+        if ($res->isEmpty())
             return null;
 
-        return $res;
         return $res[0]['conv_id'];
     }
 }

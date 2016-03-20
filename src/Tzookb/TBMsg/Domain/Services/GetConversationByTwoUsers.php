@@ -11,6 +11,7 @@ namespace Tzookb\TBMsg\Domain\Services;
 
 use Tzookb\TBMsg\Application\DTO\ParticipantsList;
 use Tzookb\TBMsg\Domain\Entities\Conversation;
+use Tzookb\TBMsg\Domain\Exceptions\ConversationNotFoundException;
 use Tzookb\TBMsg\Domain\Repositories\ConversationRepository;
 
 class GetConversationByTwoUsers
@@ -34,7 +35,9 @@ class GetConversationByTwoUsers
     {
         $res = $this->_conversationRepository->findByTwoUsers($userIdA, $userIdB);
 
-        var_dump($res->toArray());
+        if (is_null($res)) {
+            throw new ConversationNotFoundException;
+        }
 
         return $res;
     }
