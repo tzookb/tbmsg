@@ -139,4 +139,25 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
 
         return $res;
     }
+
+    public function findByTwoUsers($userIdA, $userIdB)
+    {
+        //todo, this is a problem, as if user has severl conversations with same user alone
+        //they will have many conversation in the result, in general only one is desired.
+
+        $eloquentConversationUsers = new \Tzookb\TBMsg\Persistence\Eloquent\Models\ConversationUsers();
+        $res = $eloquentConversationUsers
+            ->select('conv_id')
+            ->whereIn('user_id', [$userIdA, $userIdB])
+            ->groupBy('conv_id')
+            ->havingRaw('COUNT(conv_id) = 2000')
+            ->get();
+
+        var_dump($res);
+        if (empty($res))
+            return null;
+
+        return $res;
+        return $res[0]['conv_id'];
+    }
 }

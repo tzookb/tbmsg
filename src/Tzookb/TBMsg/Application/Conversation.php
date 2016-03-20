@@ -6,10 +6,12 @@
  * Time: 18:36
  */
 
-namespace Tzookb\TBMsg\Domain\Services;
+namespace Tzookb\TBMsg\Application;
 
 
 use Illuminate\Contracts\Foundation\Application;
+use Tzookb\TBMsg\Domain\Services\GetConversationByTwoUsers;
+use Tzookb\TBMsg\Domain\Services\MarkConversationAsRead;
 
 class Conversation
 {
@@ -30,5 +32,13 @@ class Conversation
         $markConversationAsRead = $this->_app->make(MarkConversationAsRead::class);
 
         return $markConversationAsRead->handle($convId, $userId);
+    }
+
+    public function getConversationByTwoUsers($userIdA, $userIdB)
+    {
+        /** @var GetConversationByTwoUsers $getConversationByTwoUser */
+        $getConversationByTwoUser = $this->_app->make(GetConversationByTwoUsers::class);
+
+        return $getConversationByTwoUser->handle($userIdA, $userIdB);
     }
 }

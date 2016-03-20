@@ -61,4 +61,8 @@ interface ConversationRepository extends BaseRepository
      * @return integer
      */
     public function markConversationAsRead($userId, $convId);
+
+    public function findByTwoUsers($userIdA, $userIdB);
+
+
 }
