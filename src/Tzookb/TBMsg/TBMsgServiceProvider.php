@@ -1,6 +1,10 @@
 <?php namespace Tzookb\TBMsg;
 
 use Illuminate\Support\ServiceProvider;
+use Tzookb\TBMsg\Domain\Repositories\ConversationRepository;
+use Tzookb\TBMsg\Domain\Repositories\MessageStatusRepository;
+use Tzookb\TBMsg\Persistence\Eloquent\EloquentConversationRepository;
+use Tzookb\TBMsg\Persistence\Eloquent\EloquentMessageStatusRepository;
 use Tzookb\TBMsg\Repositories\EloquentTBMsgRepository;
 
 
@@ -35,11 +39,8 @@ class TBMsgServiceProvider extends ServiceProvider {
         $usersTableKey = \Config::get('tbmsg.usersTableKey', 'id');
         $tablePrefix = \Config::get('tbmsg.tablePrefix', '');
 
-        $this->app->bind('Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository',
-            function($app) use($tablePrefix, $usersTable, $usersTableKey) {
-				$db = $app->make('Illuminate\Database\DatabaseManager');
-                return new EloquentTBMsgRepository($tablePrefix, $usersTable, $usersTableKey, $db);
-            });
+        $this->app->bind(ConversationRepository::class, EloquentConversationRepository::class);
+        $this->app->bind(MessageStatusRepository::class, EloquentMessageStatusRepository::class);
 
         // Register 'tbmsg'
         $this->app['tbmsg'] = $this->app->share(function($app) {

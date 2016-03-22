@@ -4,20 +4,15 @@ namespace Tzookb\TBMsg;
 
 use DB;
 use Config;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Collection;
-use Tzookb\TBMsg\Exceptions\ConversationNotFoundException;
-use Tzookb\TBMsg\Exceptions\NotEnoughUsersInConvException;
-use Tzookb\TBMsg\Exceptions\UserNotInConvException;
-
-use Tzookb\TBMsg\Entities\Conversation;
-use Tzookb\TBMsg\Entities\Message;
-
-use Tzookb\TBMsg\Models\Eloquent\Message as MessageEloquent;
-use Tzookb\TBMsg\Models\Eloquent\Conversation as ConversationEloquent;
-use Tzookb\TBMsg\Models\Eloquent\ConversationUsers;
-use Tzookb\TBMsg\Models\Eloquent\MessageStatus;
-use Tzookb\TBMsg\Repositories\Contracts\iTBMsgRepository;
+use Tzookb\TBMsg\Application\Conversation;
+use Tzookb\TBMsg\Application\Conversation\AddMessageToConversation;
+use Tzookb\TBMsg\Application\Conversation\CreateConversation;
+use Tzookb\TBMsg\Application\Conversation\GetMessages;
+use Tzookb\TBMsg\Application\Conversation\GetNumOfUnreadMessages;
+use Tzookb\TBMsg\Application\Conversation\GetUserConversations;
 
 class TBMsg {
 
@@ -28,21 +23,23 @@ class TBMsg {
     protected $usersTable;
     protected $usersTableKey;
     protected $tablePrefix;
+
     /**
-     * @var Repositories\Contracts\iTBMsgRepository
+     * @var Container
      */
-    protected $tbmRepo;
+    private $container;
+
     /**
      * @var Dispatcher
      */
-    protected $dispatcher;
+    private $dispatcher;
 
     /**
-     * @param iTBMsgRepository $tbmRepo
+     * @param Container $container
      * @param Dispatcher $dispatcher
      */
-    public function __construct(iTBMsgRepository $tbmRepo, Dispatcher $dispatcher) {
-        $this->tbmRepo = $tbmRepo;
+    public function __construct(Container $container, Dispatcher $dispatcher) {
+        $this->container = $container;
         $this->dispatcher = $dispatcher;
     }
 
@@ -51,45 +48,50 @@ class TBMsg {
      * @param $msgId
      * @param $userId
      * @param $status must be TBMsg consts: DELETED, UNREAD, READ, ARCHIVED
+     * @throws \Exception
      */
     public function markMessageAs($msgId, $userId, $status) {
-        $this->tbmRepo->markMessageAs($msgId, $userId, $status);
+        throw new \Exception('todo if needed');
     }
 
     /**
      * @param $msgId
      * @param $userId
      * marks specific message as read
+     * @throws \Exception
      */
     public function markMessageAsRead($msgId, $userId) {
-        $this->tbmRepo->markMessageAsRead($msgId, $userId);
+        throw new \Exception('todo if needed');
     }
 
     /**
      * @param $msgId
      * @param $userId
      * marks specific message as unread
+     * @throws \Exception
      */
     public function markMessageAsUnread($msgId, $userId) {
-        $this->tbmRepo->markMessageAsUnread($msgId, $userId);
+        throw new \Exception('todo if needed');
     }
 
     /**
      * @param $msgId
      * @param $userId
      * marks specific message as delete
+     * @throws \Exception
      */
     public function markMessageAsDeleted($msgId, $userId) {
-        $this->tbmRepo->markMessageAsDeleted($msgId, $userId);
+        throw new \Exception('todo if needed');
     }
 
     /**
      * @param $msgId
      * @param $userId
      * marks specific message as archived
+     * @throws \Exception
      */
     public function markMessageAsArchived($msgId, $userId) {
-        $this->tbmRepo->markMessageAsArchived($msgId, $userId);
+        throw new \Exception('todo if needed');
     }
 
     /**
@@ -97,53 +99,10 @@ class TBMsg {
      * @return Collection[Conversation]
      */
     public function getUserConversations($user_id) {
-        $return = [];
-        $conversations = new Collection();
-
-        $convs = $this->tbmRepo->getConversations($user_id);
-
-        $convsIds = [];
-        foreach ( $convs as $conv ) {
-            //this is for the query later
-            $convsIds[] = $conv->conv_id;
-
-            //this is for the return result
-            $conv->users = [];
-            $return[$conv->conv_id] = $conv;
-
-            $conversation = new Conversation();
-            $conversation->setId( $conv->conv_id );
-
-            $message = new Message();
-            $message->setId( $conv->msgId );
-            $message->setCreated( $conv->created_at );
-            $message->setContent( $conv->content );
-            $message->setStatus( $conv->status );
-            $message->setSelf( $conv->self );
-            $message->setSender( $conv->userId );
-            $conversation->addMessage($message);
-            $conversations[ $conversation->getId() ] = $conversation;
-        }
-        $convsIds = implode(',',$convsIds);
-
-
-        if ( $convsIds != '' ) {
-
-            $usersInConvs = $this->tbmRepo->getUsersInConvs($convsIds);
-
-            foreach ( $usersInConvs as $usersInConv ) {
-                if ( $user_id != $usersInConv->id ) {
-                    $user = new \stdClass();
-                    $user->id = $usersInConv->id;
-                    //this is for the return result
-                    $return[$usersInConv->conv_id]->users[$user->id] = $user;
-                }
-                $conversations[ $usersInConv->conv_id ]->addParticipant( $usersInConv->id );
-            }
-        }
-
-
-        return $conversations;
+        /** @var GetUserConversations $getUserConversations */
+        $getUserConversations = $this->container->make(GetUserConversations::class);
+        $conversationIds = $getUserConversations->handle($user_id);
+        return $conversationIds;
     }
 
     /**
@@ -155,27 +114,10 @@ class TBMsg {
      * return full conversation of user with his specific messages and messages statuses
      */
     public function getConversationMessages($conv_id, $user_id, $newToOld=true) {
-
-        $results = $this->tbmRepo->getConversationMessages($conv_id, $user_id, $newToOld);
-
-        $conversation = new Conversation();
-        foreach ( $results as $row )
-        {
-            $msg = new Message();
-            $msg->setId( $row->msgId );
-            $msg->setContent( $row->content );
-            $msg->setCreated( $row->created_at );
-            $msg->setSender( $row->userId );
-            $msg->setStatus($row->status);
-            $conversation->addMessage( $msg );
-        }
-
-        $usersInConv = $this->getUsersInConversation($conv_id);
-        foreach ( $usersInConv as $userInConv )
-            $conversation->addParticipant( $userInConv );
-
-
-        return $conversation;
+        /** @var GetMessages $getMessages */
+        $getMessages = $this->container->make(GetMessages::class);
+        $messages = $getMessages->handle($user_id, $conv_id);
+        return $messages;
     }
 
     /**
@@ -188,12 +130,10 @@ class TBMsg {
      * -1 if conversation not found
      */
     public function getConversationByTwoUsers($userA_id, $userB_id) {
-        try {
-            $conv = $this->tbmRepo->getConversationByTwoUsers($userA_id, $userB_id);
-        } catch (ConversationNotFoundException $ex) {
-            return -1;
-        }
-        return $conv;
+        /** @var Conversation $conversation */
+        $conversation = $this->container->make(Conversation::class);
+        $conversationId = $conversation->getConversationByTwoUsers($userA_id, $userB_id);
+        return $conversationId;
     }
 
     /**
@@ -205,48 +145,22 @@ class TBMsg {
      * send message to conversation from specific user, and return the new message data
      */
     public function addMessageToConversation($conv_id, $user_id, $content) {
-        $eventData = $this->tbmRepo->addMessageToConversation($conv_id, $user_id, $content);
-
-        $this->dispatcher->fire('message.sent',[$eventData]);
-        return  $eventData;
+        /** @var AddMessageToConversation $addMessageToConversation */
+        $addMessageToConversation = $this->container->make(AddMessageToConversation::class);
+        $res = $addMessageToConversation->handle($user_id, $content, $conv_id);
+        return $res;
     }
 
-    /**
-     * @param array $users_ids
-     * @throws Exceptions\NotEnoughUsersInConvException
-     * @return ConversationEloquent
-     */
     public function createConversation( $users_ids ) {
-        $eventData = $this->tbmRepo->createConversation($users_ids);
-        $this->dispatcher->fire('conversation.created',[$eventData]);
-        return $eventData;
+        /** @var CreateConversation $createConversation */
+        $createConversation = $this->container->make(CreateConversation::class);
+        $res = $createConversation->handle($users_ids);
+        return $res;
     }
 
-    /**
-     * @param $senderId
-     * @param $receiverId
-     * @param $content
-     * @return array
-     *
-     * send message to specific user from specific user, and return the new message data
-     * if conversation is not existing yet between users it will create it
-     */
     public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content)
     {
-        //get conversation by two users
-        try {
-            $conv = $this->tbmRepo->getConversationByTwoUsers($senderId, $receiverId);
-        } catch (ConversationNotFoundException $ex) {
-            //if conversation doesnt exist, create it
-            $conv = $this->tbmRepo->createConversation([$senderId, $receiverId]);
-            $conv = $conv['convId'];
-        }
-
-        //add message to new conversation
-        $eventData = $this->tbmRepo->addMessageToConversation($conv, $senderId, $content);
-
-        $this->dispatcher->fire('message.sent',[$eventData]);
-        return  $eventData;
+        throw new \Exception('todo if needed');
     }
 
     /**
@@ -254,58 +168,29 @@ class TBMsg {
      * @param $user_id
      *
      * mark all messages for specific user in specific conversation as read
+     * @return int
      */
     public function markReadAllMessagesInConversation($conv_id, $user_id) {
-        $this->tbmRepo->markReadAllMessagesInConversation($conv_id, $user_id);
+        /** @var Conversation $conversation */
+        $conversation = $this->container->make(Conversation::class);
+        $res = $conversation->justReadConversation($conv_id, $user_id);
+        return $res;
     }
 
-    /**
-     * @param $conv_id
-     * @param $user_id
-     *
-     * mark all messages for specific user in specific conversation as unread
-     */
     public function markUnreadAllMessagesInConversation($conv_id, $user_id) {
-        DB::statement(
-            '
-            UPDATE messages_status mst
-            SET mst.status=?
-            WHERE mst.user_id=?
-            AND mst.status=?
-            AND mst.msg_id IN (
-              SELECT msg.id
-              FROM messages msg
-              WHERE msg.conv_id=?
-              AND msg.sender_id!=?
-            )
-            ',
-            [self::UNREAD, $user_id, self::READ, $conv_id, $user_id]
-        );
+        throw new \Exception('todo if needed');
     }
 
     public function deleteConversation($conv_id, $user_id) {
-        $this->tbmRepo->deleteConversation($conv_id, $user_id);
+        throw new \Exception('todo if needed');
     }
 
-    /**
-     * @param $conv_id
-     * @param $user_id
-     * @return bool
-     *
-     * checks if specific user is in specific conversation
-     */
     public function isUserInConversation($conv_id, $user_id) {
-        return $this->tbmRepo->isUserInConversation($conv_id, $user_id);
+        throw new \Exception('todo if needed');
     }
 
-    /**
-     * @param $conv_id
-     * @return array
-     *
-     * get an array of user id that participate in specific conversation
-     */
     public function getUsersInConversation($conv_id) {
-        return $this->tbmRepo->getUsersInConversation($conv_id);
+        throw new \Exception('todo if needed');
     }
 
     /**
@@ -315,6 +200,9 @@ class TBMsg {
      * get number of unread messages for specific user
      */
     public function getNumOfUnreadMsgs($user_id) {
-        return $this->tbmRepo->getNumOfUnreadMsgs($user_id);
+        /** @var GetNumOfUnreadMessages $getNumOfUnreadMessages */
+        $getNumOfUnreadMessages = $this->container->make(GetNumOfUnreadMessages::class);
+        $res = $getNumOfUnreadMessages->handle($user_id);
+        return $res;
     }
 }

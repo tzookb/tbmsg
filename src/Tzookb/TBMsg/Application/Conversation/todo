@@ -4,7 +4,6 @@
 - get messages of conversation (user, conv)
 - get count of unread msgs (user)
 - mark conv as read (user, conv)
-
 - check if conversation exists between two users
 
 - delete conv (user, conv)

@@ -27,6 +27,6 @@ class GetNumOfUnreadMessages
     public function handle($userId)
     {
         $res = $this->_getNumOfUnreadMessages->handle($userId);
-        var_dump($res);
+        return $res;
     }
 }
