@@ -44,55 +44,6 @@ class TBMsg {
     }
 
 
-    /**
-     * @param $msgId
-     * @param $userId
-     * @param $status must be TBMsg consts: DELETED, UNREAD, READ, ARCHIVED
-     * @throws \Exception
-     */
-    public function markMessageAs($msgId, $userId, $status) {
-        throw new \Exception('todo if needed');
-    }
-
-    /**
-     * @param $msgId
-     * @param $userId
-     * marks specific message as read
-     * @throws \Exception
-     */
-    public function markMessageAsRead($msgId, $userId) {
-        throw new \Exception('todo if needed');
-    }
-
-    /**
-     * @param $msgId
-     * @param $userId
-     * marks specific message as unread
-     * @throws \Exception
-     */
-    public function markMessageAsUnread($msgId, $userId) {
-        throw new \Exception('todo if needed');
-    }
-
-    /**
-     * @param $msgId
-     * @param $userId
-     * marks specific message as delete
-     * @throws \Exception
-     */
-    public function markMessageAsDeleted($msgId, $userId) {
-        throw new \Exception('todo if needed');
-    }
-
-    /**
-     * @param $msgId
-     * @param $userId
-     * marks specific message as archived
-     * @throws \Exception
-     */
-    public function markMessageAsArchived($msgId, $userId) {
-        throw new \Exception('todo if needed');
-    }
 
     /**
      * @param $user_id
@@ -158,10 +109,7 @@ class TBMsg {
         return $res;
     }
 
-    public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content)
-    {
-        throw new \Exception('todo if needed');
-    }
+
 
     /**
      * @param $conv_id
@@ -177,21 +125,6 @@ class TBMsg {
         return $res;
     }
 
-    public function markUnreadAllMessagesInConversation($conv_id, $user_id) {
-        throw new \Exception('todo if needed');
-    }
-
-    public function deleteConversation($conv_id, $user_id) {
-        throw new \Exception('todo if needed');
-    }
-
-    public function isUserInConversation($conv_id, $user_id) {
-        throw new \Exception('todo if needed');
-    }
-
-    public function getUsersInConversation($conv_id) {
-        throw new \Exception('todo if needed');
-    }
 
     /**
      * @param $user_id
@@ -205,4 +138,81 @@ class TBMsg {
         $res = $getNumOfUnreadMessages->handle($user_id);
         return $res;
     }
+
+
+
+
+//
+//    /**
+//     * @param $msgId
+//     * @param $userId
+//     * @param $status must be TBMsg consts: DELETED, UNREAD, READ, ARCHIVED
+//     * @throws \Exception
+//     */
+//    public function markMessageAs($msgId, $userId, $status) {
+//        throw new \Exception('todo if needed');
+//    }
+//
+//    /**
+//     * @param $msgId
+//     * @param $userId
+//     * marks specific message as read
+//     * @throws \Exception
+//     */
+//    public function markMessageAsRead($msgId, $userId) {
+//        throw new \Exception('todo if needed');
+//    }
+//
+//    /**
+//     * @param $msgId
+//     * @param $userId
+//     * marks specific message as unread
+//     * @throws \Exception
+//     */
+//    public function markMessageAsUnread($msgId, $userId) {
+//        throw new \Exception('todo if needed');
+//    }
+//
+//    /**
+//     * @param $msgId
+//     * @param $userId
+//     * marks specific message as delete
+//     * @throws \Exception
+//     */
+//    public function markMessageAsDeleted($msgId, $userId) {
+//        throw new \Exception('todo if needed');
+//    }
+//
+//    /**
+//     * @param $msgId
+//     * @param $userId
+//     * marks specific message as archived
+//     * @throws \Exception
+//     */
+//    public function markMessageAsArchived($msgId, $userId) {
+//        throw new \Exception('todo if needed');
+//    }
+//
+//
+//    public function sendMessageBetweenTwoUsers($senderId, $receiverId, $content)
+//    {
+//        throw new \Exception('todo if needed');
+//    }
+//
+//    public function markUnreadAllMessagesInConversation($conv_id, $user_id) {
+//        throw new \Exception('todo if needed');
+//    }
+//
+//    public function deleteConversation($conv_id, $user_id) {
+//        throw new \Exception('todo if needed');
+//    }
+//
+//    public function isUserInConversation($conv_id, $user_id) {
+//        throw new \Exception('todo if needed');
+//    }
+//
+//    public function getUsersInConversation($conv_id) {
+//        throw new \Exception('todo if needed');
+//    }
+
 }
