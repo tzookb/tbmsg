@@ -31,16 +31,14 @@
   },
   "require-all": true,
   "autoload": {
-    "psr-0": {
-      "Tzookb\\TBMsg": "src/",
-      "Tests\\": "Tests/"
-    },
     "psr-4": {
-      "Tests\\": "Tests/"
-    },
-    "classmap": [
-      "src/migrations/"
-    ]
+      "Tzookb\\TBMsg\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tzookb\\TBMsg\\Tests\\": "Tests/"
+    }
   },
   "minimum-stability": "dev"
 }

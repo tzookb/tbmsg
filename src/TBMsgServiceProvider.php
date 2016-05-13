@@ -5,7 +5,6 @@ use Tzookb\TBMsg\Domain\Repositories\ConversationRepository;
 use Tzookb\TBMsg\Domain\Repositories\MessageStatusRepository;
 use Tzookb\TBMsg\Persistence\Eloquent\EloquentConversationRepository;
 use Tzookb\TBMsg\Persistence\Eloquent\EloquentMessageStatusRepository;
-use Tzookb\TBMsg\Repositories\EloquentTBMsgRepository;
 
 
 class TBMsgServiceProvider extends ServiceProvider {

@@ -6,10 +6,10 @@
  * Time: 18:24
  */
 
-namespace Tests\Application\Conversation;
+namespace Tzookb\TBMsg\Tests\Application\Conversation;
 
 
-use Tests\TestCaseDb;
+use Tzookb\TBMsg\Tests\TestCaseDb;
 use Tzookb\TBMsg\Application\Conversation\CreateConversation;
 
 class CreateConversationTest extends TestCaseDb

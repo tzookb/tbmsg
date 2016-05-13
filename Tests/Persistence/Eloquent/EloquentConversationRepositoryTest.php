@@ -6,11 +6,11 @@
  * Time: 12:51
  */
 
-namespace Tests\Persistence\Eloquent;
+namespace Tzookb\TBMsg\Tests\Persistence\Eloquent;
 
 
 use Tests\Domain\Helpers\TestParticipant;
-use Tests\TestCaseDb;
+use Tzookb\TBMsg\Tests\TestCaseDb;
 use Tzookb\TBMsg\Domain\Entities\Conversation;
 use Tzookb\TBMsg\Persistence\Eloquent\EloquentConversationRepository;
 

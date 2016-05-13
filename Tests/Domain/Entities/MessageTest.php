@@ -6,7 +6,7 @@
  * Time: 17:46
  */
 
-namespace Tests\Domain\Entities;
+namespace Tzookb\TBMsg\Tests\Domain\Entities;
 
 
 use Carbon\Carbon;

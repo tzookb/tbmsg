@@ -6,7 +6,7 @@
  * Time: 11:37
  */
 
-namespace Tests\Helpers;
+namespace Tzookb\TBMsg\Tests\Helpers;
 
 
 use Illuminate\Contracts\Events\Dispatcher;

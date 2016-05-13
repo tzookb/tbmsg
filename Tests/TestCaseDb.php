@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tzookb\TBMsg\Tests;
 
 use Illuminate\Database\Capsule\Manager;
 

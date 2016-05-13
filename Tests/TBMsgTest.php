@@ -6,11 +6,10 @@
  * Time: 11:38
  */
 
-namespace Tests;
+namespace Tzookb\TBMsg\Tests;
 
 
-use Tests\Helpers\MockDispatcher;
-use Tzookb\TBMsg\TBMsg;
+use Tzookb\TBMsg\Tests\Helpers\MockDispatcher;
 
 class TBMsgTest extends TestCaseDb
 {

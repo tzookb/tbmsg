@@ -6,13 +6,13 @@
  * Time: 16:44
  */
 
-namespace Tests\Domain\Services;
+namespace Tzookb\TBMsg\Tests\Domain\Services;
 
 use Tzookb\TBMsg\Application\DTO\MessageDTO;
 use Tzookb\TBMsg\Application\DTO\ParticipantsList;
 use Tzookb\TBMsg\Domain\Services\CreateConversation;
 use Tzookb\TBMsg\Domain\Services\MessageConversation;
-use Tests\TestCaseDb;
+use Tzookb\TBMsg\Tests\TestCaseDb;
 use Tzookb\TBMsg\Persistence\Eloquent\EloquentConversationRepository;
 use Tzookb\TBMsg\Persistence\Eloquent\EloquentMessageStatusRepository;
 use Tzookb\TBMsg\Persistence\Eloquent\Models\MessageStatus;

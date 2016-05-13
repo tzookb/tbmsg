@@ -3,7 +3,7 @@
  * This awesome class written by: tzookb
  * Date: 11/02/15
  */
-namespace Tests;
+namespace Tzookb\TBMsg\Tests;
 
 
 use Illuminate\Contracts\Events\Dispatcher;

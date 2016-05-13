@@ -6,12 +6,12 @@
  * Time: 18:24
  */
 
-namespace Tests\Application\Conversation;
+namespace Tzookb\TBMsg\Tests\Application\Conversation;
 
 
-use Tests\TestCaseDb;
 use Tzookb\TBMsg\Application\Conversation\AddMessageToConversation;
 use Tzookb\TBMsg\Domain\Services\MessageConversation;
+use Tzookb\TBMsg\Tests\TestCaseDb;
 
 
 class AddMessageToConversationTest extends TestCaseDb
