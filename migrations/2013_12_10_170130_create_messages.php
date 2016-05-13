@@ -11,7 +11,7 @@ class CreateMessages extends Migration {
 	 */
 	public function up()
 	{
-        Schema::create('messages', function($table)
+        Schema::create('tbm_messages', function($table)
         {
             $table->increments('id');
             $table->integer('sender_id');
@@ -32,7 +32,7 @@ class CreateMessages extends Migration {
 	 */
 	public function down()
 	{
-        Schema::drop('messages');
+        Schema::drop('tbm_messages');
 	}
 
 }

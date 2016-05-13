@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ConversationUsers  extends Model {
 
-    protected $table = 'conv_users';
+    protected $table = 'tbm_conv_users';
     protected $fillable = ['user_id'];
     public $timestamps = false;
 

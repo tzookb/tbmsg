@@ -1,4 +1,4 @@
-<?php namespace Tzookb\TBMsg;
+<?php namespace Tzookb\TBMsg\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
 use Tzookb\TBMsg\Domain\Repositories\ConversationRepository;

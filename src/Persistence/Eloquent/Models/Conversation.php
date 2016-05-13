@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Conversation  extends Model {
 
+    protected $table = 'tbm_conversations';
 
     public function conversationUsers()
     {

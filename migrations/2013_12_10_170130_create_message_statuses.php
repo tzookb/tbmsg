@@ -11,7 +11,7 @@ class CreateMessageStatuses extends Migration {
 	 */
 	public function up()
 	{
-        Schema::create('message_statuses', function($table)
+        Schema::create('tbm_message_statuses', function($table)
         {
             $table->increments('id');
             $table->integer('user_id');
@@ -30,7 +30,7 @@ class CreateMessageStatuses extends Migration {
 	 */
 	public function down()
 	{
-        Schema::drop('message_statuses');
+        Schema::drop('tbm_message_statuses');
 	}
 
 }

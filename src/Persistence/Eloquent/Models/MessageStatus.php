@@ -15,6 +15,8 @@ class MessageStatus extends Model {
 
     public $timestamps = false;
 
+    protected $table = 'tbm_message_statuses';
+
     public function message()
     {
         return $this->belongsTo('Tzookb\TBMsg\Persistence\Eloquent\Models\Message');

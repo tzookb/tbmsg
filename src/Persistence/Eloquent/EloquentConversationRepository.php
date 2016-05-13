@@ -108,13 +108,13 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
 
         $res = $eloquentMessage
             ->select([
-                'messages.id', 'messages.sender_id', 'messages.content',
-                'messages.created_at', 'message_statuses.status',
-                'message_statuses.user_id'
+                'tbm_messages.id', 'tbm_messages.sender_id', 'tbm_messages.content',
+                'tbm_messages.created_at', 'tbm_message_statuses.status',
+                'tbm_message_statuses.user_id'
             ])
-            ->where('messages.conv_id', $convId)
-            ->where('message_statuses.user_id', $userId)
-            ->join('message_statuses', 'messages.id', '=', 'message_statuses.msg_id')
+            ->where('tbm_messages.conv_id', $convId)
+            ->where('tbm_message_statuses.user_id', $userId)
+            ->join('tbm_message_statuses', 'tbm_messages.id', '=', 'tbm_message_statuses.msg_id')
             ->get();
 
         return $res->toArray();
@@ -126,8 +126,8 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
         $eloquentMessageStatus = new \Tzookb\TBMsg\Persistence\Eloquent\Models\MessageStatus();
 
         $messagesIdsInConv = $eloquentMessage
-            ->select('messages.id')
-            ->where('messages.conv_id', $convId)
+            ->select('tbm_messages.id')
+            ->where('tbm_messages.conv_id', $convId)
             ->get()->map(function($row) {
                 return $row->id;
             });

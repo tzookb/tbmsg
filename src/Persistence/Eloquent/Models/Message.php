@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model {
 
+    protected $table = 'tbm_messages';
 
     public function messagesStatus()
     {

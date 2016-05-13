@@ -11,7 +11,7 @@ class CreateConvUsers extends Migration {
      */
     public function up()
     {
-        Schema::create('conv_users', function($table)
+        Schema::create('tbm_conv_users', function($table)
         {
             $table->integer('conv_id')->nullable();
             $table->integer('user_id')->nullable();
@@ -30,7 +30,7 @@ class CreateConvUsers extends Migration {
      */
     public function down()
     {
-        Schema::drop('conv_users');
+        Schema::drop('tbm_conv_users');
     }
 
 }

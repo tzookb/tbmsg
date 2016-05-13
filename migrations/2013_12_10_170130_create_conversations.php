@@ -11,7 +11,7 @@ class CreateConversations extends Migration {
 	 */
 	public function up()
 	{
-        Schema::create('conversations', function($table)
+        Schema::create('tbm_conversations', function($table)
         {
             $table->increments('id');
 
@@ -29,7 +29,7 @@ class CreateConversations extends Migration {
 	 */
 	public function down()
 	{
-        Schema::drop('conversations');
+        Schema::drop('tbm_conversations');
 	}
 
 }

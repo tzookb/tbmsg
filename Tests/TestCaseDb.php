@@ -40,7 +40,7 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 		return $this->db;
 	}
 	protected function createTables() {
-		Manager::schema()->create('conv_users', function($table)
+		Manager::schema()->create('tbm_conv_users', function($table)
 		{
 			$table->integer('conv_id')->nullable();
 			$table->integer('user_id')->nullable();
@@ -49,7 +49,7 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 			$table->primary(array('conv_id', 'user_id'));
 		});
 
-		Manager::schema()->create('conversations', function($table)
+		Manager::schema()->create('tbm_conversations', function($table)
 		{
 			$table->increments('id');
 
@@ -57,7 +57,7 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 			$table->timestamps();
 		});
 
-		Manager::schema()->create('messages', function($table)
+		Manager::schema()->create('tbm_messages', function($table)
 		{
 			$table->increments('id');
 			$table->integer('sender_id');
@@ -69,7 +69,7 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 			$table->index('conv_id');
 		});
 
-		Manager::schema()->create('message_statuses', function($table)
+		Manager::schema()->create('tbm_message_statuses', function($table)
 		{
 			$table->increments('id');
 			$table->integer('user_id');
