@@ -9,7 +9,7 @@
 namespace Tzookb\TBMsg\Tests\Application\Conversation;
 
 
-use Tzookb\TBMsg\Application\Conversation\AddMessageToConversation;
+use Tzookb\TBMsg\Application\Conversation;
 use Tzookb\TBMsg\Domain\Services\MessageConversation;
 use Tzookb\TBMsg\Tests\TestCaseDb;
 
@@ -32,13 +32,18 @@ class AddMessageToConversationTest extends TestCaseDb
         $messageStatusRepository->shouldReceive('create')->times(sizeof($demoParticipantsId))->andReturn([1,1]);
 
         $messageConversation = new MessageConversation($conversationRepository, $messageStatusRepository);
-        $addMessageToConversation = new AddMessageToConversation($messageConversation);
+
+        $this->app->bind(MessageConversation::class, function() use($messageConversation) {
+            return $messageConversation;
+        });
+
+        $conversation = new Conversation($this->app);
 
         $creatorId = 1;
         $conversationId = 1;
         $content = 'whatever';
 
-        $res = $addMessageToConversation->handle($creatorId, $content, $conversationId);
+        $res = $conversation->addMessageToConversation($creatorId, $content, $conversationId);
         $this->assertTrue($res);
     }
 

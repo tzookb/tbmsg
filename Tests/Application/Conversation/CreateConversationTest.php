@@ -9,8 +9,9 @@
 namespace Tzookb\TBMsg\Tests\Application\Conversation;
 
 
+use Tzookb\TBMsg\Application\Conversation;
+use Tzookb\TBMsg\Domain\Services\CreateConversation;
 use Tzookb\TBMsg\Tests\TestCaseDb;
-use Tzookb\TBMsg\Application\Conversation\CreateConversation;
 
 class CreateConversationTest extends TestCaseDb
 {
@@ -19,10 +20,16 @@ class CreateConversationTest extends TestCaseDb
     {
         $conversationRepository = \Mockery::mock('Tzookb\TBMsg\Domain\Repositories\ConversationRepository');
         $conversationRepository->shouldReceive('create')->once()->andReturn(1);
-        $createConversation = new CreateConversation(
-            new \Tzookb\TBMsg\Domain\Services\CreateConversation($conversationRepository)
-        );
-        $res = $createConversation->handle([1,2]);
+
+        $createConversation = new CreateConversation($conversationRepository);
+
+        $this->app->bind(CreateConversation::class, function() use($createConversation) {
+            return $createConversation;
+        });
+
+        $conversation = new Conversation($this->app);
+
+        $res = $conversation->createConversation([1,2]);
 
         $this->assertEquals(1, $res);
     }

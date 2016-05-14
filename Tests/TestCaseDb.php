@@ -2,6 +2,7 @@
 
 namespace Tzookb\TBMsg\Tests;
 
+use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
 
 
@@ -11,8 +12,13 @@ class TestCaseDb extends \PHPUnit_Framework_TestCase {
 	/** @var \Tzookb\TBMsg\TBMsg */
 	protected $tbmsg;
 
+	/** @var  Container */
+	protected $app;
+
 	public function setUp() {
 		parent::setUp(); // Don't forget this!
+
+		$this->app = new Container();
 
 		\League\FactoryMuffin\Facade::getFaker()->unique($reset = true);
 		$this->initDb();
