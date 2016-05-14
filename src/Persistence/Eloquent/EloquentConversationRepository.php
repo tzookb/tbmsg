@@ -140,12 +140,18 @@ class EloquentConversationRepository extends EloquentBaseRepository implements C
         return $res;
     }
 
+    /**
+     * @param integer $userIdA
+     * @param integer $userIdB
+     * @return integer
+     */
     public function findByTwoUsers($userIdA, $userIdB)
     {
-        //todo, this is a problem, as if user has severl conversations with same user alone
-        //they will have many conversation in the result, in general only one is desired.
+        /* todo, this is a problem, as if user has severl conversations with same user alone
+         * they will have many conversation in the result, in general only one is desired.
+         * */
 
-        $eloquentConversationUsers = new \Tzookb\TBMsg\Persistence\Eloquent\Models\ConversationUsers();
+        $eloquentConversationUsers = new ConversationUsers();
         $res = $eloquentConversationUsers
             ->select('conv_id')
             ->whereIn('user_id', [$userIdA, $userIdB])

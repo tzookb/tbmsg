@@ -8,6 +8,8 @@ use Illuminate\Database\Capsule\Manager;
 
 class TestCaseDb extends \PHPUnit_Framework_TestCase {
 
+    const DONT_CARE = 1;
+
 	protected $db;
 	/** @var \Tzookb\TBMsg\TBMsg */
 	protected $tbmsg;

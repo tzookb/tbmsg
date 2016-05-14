@@ -9,8 +9,6 @@
 namespace Tzookb\TBMsg\Domain\Services;
 
 
-use Tzookb\TBMsg\Application\DTO\ParticipantsList;
-use Tzookb\TBMsg\Domain\Entities\Conversation;
 use Tzookb\TBMsg\Domain\Exceptions\ConversationNotFoundException;
 use Tzookb\TBMsg\Domain\Repositories\ConversationRepository;
 
@@ -30,6 +28,7 @@ class GetConversationByTwoUsers
      * @param $userIdA
      * @param $userIdB
      * @return int
+     * @throws ConversationNotFoundException
      */
     public function handle($userIdA, $userIdB)
     {
