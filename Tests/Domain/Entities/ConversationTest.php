@@ -29,7 +29,7 @@ class ConversationTest extends \PHPUnit_Framework_TestCase
     public function check_constructor_with_created()
     {
         $lastWeek = Carbon::now()->subWeek();
-        $conv = new Conversation([2], [], $lastWeek);
+        $conv = new Conversation([2], [], '', $lastWeek);
         $this->assertEquals($lastWeek, $conv->getCreated());
     }
 
@@ -37,8 +37,17 @@ class ConversationTest extends \PHPUnit_Framework_TestCase
     public function check_constructor_with_id()
     {
         $id = 55;
-        $conv = new Conversation([2], [], null, $id);
+        $conv = new Conversation([2], [], '', null, $id);
         $this->assertEquals($id, $conv->getId());
+    }
+
+    /** @test */
+    public function check_constructor_with_title()
+    {
+        $title = 'dontcare title';
+
+        $conv = new Conversation([2], [], $title);
+        $this->assertEquals($title, $conv->getTitle());
     }
 
     /** @test */

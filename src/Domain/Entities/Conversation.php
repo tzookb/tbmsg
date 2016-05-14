@@ -15,6 +15,7 @@ use Tzookb\TBMsg\Domain\Exceptions\NotEnoughParticipantsForConversationException
 class Conversation
 {
     private $_id;
+    private $_title;
 
     private $_participants;
 
@@ -24,7 +25,7 @@ class Conversation
     /** @var Carbon */
     private $_created;
 
-    public function __construct(array $participants, array $messages = [], $created = null, $id = null)
+    public function __construct(array $participants, array $messages = [], $title = '', $created = null, $id = null)
     {
         $this->setParticipants($participants);
 
@@ -35,11 +36,21 @@ class Conversation
         }
         $this->setCreated($created);
 
+        $this->_title = $title;
+
         $this->_id = $id;
     }
 
     public function getId() {
         return $this->_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->_title;
     }
 
     public function getParticipants() {
