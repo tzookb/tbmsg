@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/tzookb/tbmsg.png?label=ready&title=Ready)](https://waffle.io/tzookb/tbmsg)
 Laravel User Messaging system
 ===============================
 
